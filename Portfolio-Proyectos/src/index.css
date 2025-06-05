@@ -1,68 +1,95 @@
+@import 'tailwindcss';
+
+/* Define el variant dark personalizado para v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Estilos personalizados para temas */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Variables CSS para tema claro */
+  --border-radius-theme: 0.5rem;
+  --shadow-theme: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --transition-theme: all 0.3s ease;
+  --bg-pattern: linear-gradient(45deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+.theme-dark {
+  /* Variables CSS para tema oscuro */
+  --border-radius-theme: 1rem;
+  --shadow-theme: 0 10px 25px -3px rgba(0, 0, 0, 0.5);
+  --transition-theme: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --bg-pattern: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* Estilos globales que cambian con el tema */
+.theme-transition {
+  transition: var(--transition-theme);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.theme-card {
+  border-radius: var(--border-radius-theme);
+  box-shadow: var(--shadow-theme);
+  transition: var(--transition-theme);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.theme-bg-pattern {
+  background: var(--bg-pattern);
+}
+
+/* Animaciones específicas para cada tema */
+.theme-light .animate-float {
+  animation: float-light 3s ease-in-out infinite;
+}
+
+.theme-dark .animate-float {
+  animation: float-dark 4s ease-in-out infinite;
+}
+
+@keyframes float-light {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes float-dark {
+  0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(-15px) rotate(-3deg) scale(1.05); }
+}
+
+/* Efectos de hover diferentes por tema */
+.theme-light .hover-effect:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.theme-dark .hover-effect:hover {
+  transform: translateY(-5px) scale(1.05) rotate(1deg);
+  box-shadow: 0 15px 35px rgba(139, 92, 246, 0.3);
+}
+
+/* Bordes animados */
+.theme-light .animated-border {
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(45deg, #3b82f6, #8b5cf6) border-box;
+}
+
+.theme-dark .animated-border {
+  border: 2px solid transparent;
+  background: linear-gradient(#1f2937, #1f2937) padding-box,
+              linear-gradient(45deg, #f59e0b, #ef4444) border-box;
+}
+
+/* Texto con efectos diferentes */
+.theme-light .theme-text {
+  background: linear-gradient(45deg, #1e40af, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.theme-dark .theme-text {
+  background: linear-gradient(45deg, #fbbf24, #f87171);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
 }
