@@ -6,18 +6,36 @@ import Light from './Light';
 const ButtonToggle = ({ className = "" }) => {
   const { isDarkMode, toggleTheme } = useTheme();
 
+  // Estilos dinámicos que coinciden con el header
+  const getButtonStyles = () => {
+    if (isDarkMode) {
+      return `
+        relative p-2 cursor-pointer
+        bg-transparent border-2 border-emerald-500 rounded-none
+        text-emerald-500 hover:text-emerald-400
+        hover:bg-emerald-500/20 hover:scale-105
+        shadow-lg shadow-emerald-500/40 hover:shadow-emerald-500/60
+        transition-all duration-200
+        focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50
+      `;
+    } else {
+      return `
+        relative p-2.5 cursor-pointer
+        bg-white/90 backdrop-blur-sm rounded-xl
+        text-slate-600 hover:text-slate-800
+        border border-slate-200/60 hover:border-slate-300/80
+        shadow-sm hover:shadow-lg hover:shadow-slate-200/50
+        hover:bg-white/95 hover:scale-[1.02]
+        transition-all duration-300 ease-out
+        focus:outline-none focus:ring-2 focus:ring-slate-400/30 focus:ring-offset-2
+      `;
+    }
+  };
+
   return (
     <button
       onClick={toggleTheme}
-      className={`
-        relative p-2 rounded-lg 
-        bg-gray-100 dark:bg-gray-800 
-        text-gray-600 dark:text-gray-400 
-        hover:text-blue-600 dark:hover:text-blue-400 
-        transition-all duration-200 hover:scale-110
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
-        ${className}
-      `}
+      className={`${getButtonStyles()} ${className}`}
       aria-label={`Cambiar a modo ${isDarkMode ? 'claro' : 'oscuro'}`}
       title={`Modo ${isDarkMode ? 'claro' : 'oscuro'}`}
     >
