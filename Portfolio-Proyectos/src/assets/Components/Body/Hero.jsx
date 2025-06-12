@@ -65,7 +65,7 @@ const Hero = () => {
         
         <p className={styles.subtitle}>
           {isDarkMode 
-            ? '// Frontend Developer { React.js | JavaScript | CSS3 }' 
+            ? '// Frontend Developer' 
             : 'Desarrollador Frontend creando experiencias web modernas y elegantes'
           }
         </p>
@@ -79,17 +79,18 @@ const Hero = () => {
               </div>
               <div className="text-emerald-300 text-sm">
                 drwxr-xr-x  React.js<br/>
+                drwxr-xr-x  Vite<br/>
                 drwxr-xr-x  JavaScript<br/>
                 drwxr-xr-x  CSS3 & Tailwind<br/>
-                drwxr-xr-x  Node.js<br/>
-                -rw-r--r--  portfolio.json
+                drwxr-xr-x  Unity<br/>
+                -rw-r--r--  C#
               </div>
               <div className="mt-4">
                 <span className="text-emerald-500">sergio@portfolio:~$</span> 
                 <span className="text-emerald-400"> cat welcome.txt</span>
               </div>
               <div className="text-emerald-300 text-sm">
-                "Bienvenido a mi espacio digital. Aquí encontrarás mis proyectos, habilidades y formas de contacto."
+                "Bienvenido a mi espacio digital. Aquí encontrarás mis proyectos, habilidades y formas de contactarme."
               </div>
               <div className="mt-2">
                 <span className="text-emerald-500">sergio@portfolio:~$</span> 

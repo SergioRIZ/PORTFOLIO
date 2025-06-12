@@ -21,7 +21,7 @@ export const useTheme = () => {
     }
   }, []);
 
-  // Función para cambiar tema con estilos adicionales
+  // Función para cambiar tema con corrección mínima
   const toggleTheme = () => {
     const newMode = !isDarkMode;
     setIsDarkMode(newMode);
@@ -35,6 +35,12 @@ export const useTheme = () => {
       document.documentElement.classList.add('theme-light');
       localStorage.setItem('theme', 'light');
     }
+
+    // CORRECCIÓN MÍNIMA: Solo forzar repaint si es necesario
+    requestAnimationFrame(() => {
+      // Trigger repaint suave
+      document.body.offsetHeight;
+    });
   };
 
   // Función para obtener estilos dinámicos basados en el tema

@@ -20,19 +20,79 @@
   --bg-pattern: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 }
 
+/* HEADER - Enfoque más sutil para mantenerlo visible */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  /* Evitar que las transiciones lo afecten */
+  will-change: auto;
+}
+
+/* Asegurar que el header específico tenga prioridad */
+.header-component,
+[data-header="true"] {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+/* SOLUCIÓN CORRECTA: Espaciado entre secciones */
+section {
+  /* Espaciado vertical entre secciones */
+  margin-bottom: 5rem; /* 80px de separación */
+  /* Prevenir invisibilidad en cambio de tema - MÉTODO MÁS SUAVE */
+  opacity: 1;
+  visibility: visible;
+  transform: translateZ(0);
+  /* Añadir transición suave para evitar flickering */
+  transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
+}
+
+/* Añadir padding-top a la primera sección para compensar el header fijo */
+section:first-of-type {
+  margin-top: 0;
+  padding-top: 90px; /* Espacio para el header fijo */
+}
+
+/* La última sección no necesita margen inferior */
+section:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Espaciado responsivo */
+@media (min-width: 768px) {
+  section {
+    margin-bottom: 8rem; /* 128px en pantallas medianas y grandes */
+  }
+  
+  section:first-of-type {
+    padding-top: 110px; /* Más espacio en pantallas grandes */
+  }
+}
+
 /* Estilos globales que cambian con el tema */
 .theme-transition {
   transition: var(--transition-theme);
+  /* Prevenir flickering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .theme-card {
   border-radius: var(--border-radius-theme);
   box-shadow: var(--shadow-theme);
   transition: var(--transition-theme);
+  transform: translateZ(0);
 }
 
 .theme-bg-pattern {
   background: var(--bg-pattern);
+  min-height: 100vh;
 }
 
 /* Animaciones específicas para cada tema */
@@ -92,4 +152,56 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+/* Corrección específica para componentes que pueden desaparecer */
+#projects,
+#skills,
+#about,
+#contact {
+  opacity: 1;
+  visibility: visible;
+  /* Transición más suave para cambios de tema */
+  transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Forzar repaint en cambios de tema - MÉTODO MÁS SUAVE */
+.theme-light,
+.theme-dark {
+  transform: translateZ(0);
+  /* Asegurar transiciones suaves */
+  transition: all 0.3s ease-in-out;
+}
+
+/* Utilidad para forzar repaint */
+.force-repaint {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Smooth scroll con compensación para header fijo */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px; /* Compensar altura del header */
+}
+
+/* Prevenir que las transiciones de tema afecten la visibilidad del contenido */
+body {
+  /* Asegurar que el contenido no desaparezca durante transiciones */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Específicamente para prevenir el flickering en cambios de tema */
+main,
+#root {
+  /* Mantener estable durante transiciones */
+  min-height: 100vh;
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Clase de utilidad para elementos que deben mantenerse siempre visibles */
+.always-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }

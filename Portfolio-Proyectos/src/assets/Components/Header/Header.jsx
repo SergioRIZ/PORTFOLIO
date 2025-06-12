@@ -40,7 +40,6 @@ const Header = () => {
     { name: 'Inicio', href: '#home' },
     { name: 'Sobre mí', href: '#about' },
     { name: 'Proyectos', href: '#projects' },
-    { name: 'Habilidades', href: '#skills' },
     { name: 'Contacto', href: '#contact' }
   ];
 
@@ -109,7 +108,6 @@ const Header = () => {
                 'Inicio': '[INICIO]',
                 'Sobre mí': '[ABOUT]',
                 'Proyectos': '[PROJECTS]',
-                'Habilidades': '[SKILLS]',
                 'Contacto': '[CONTACT]'
               };
               
@@ -163,7 +161,6 @@ const Header = () => {
                 'Inicio': '[INICIO]',
                 'Sobre mí': '[ABOUT]',
                 'Proyectos': '[PROJECTS]',
-                'Habilidades': '[SKILLS]',
                 'Contacto': '[CONTACT]'
               };
               

@@ -84,12 +84,12 @@ const Aboutme = () => {
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
                   {isDarkMode ? 'NOMBRE:' : 'Nombre:'} 
-                </span> {isDarkMode ? 'SERGIO_RIZ' : 'Sergio Riz'}
+                </span> {isDarkMode ? 'SERGIO_RIZ' : 'Sergio Roldan Ibañez'}
               </li>
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
                   {isDarkMode ? 'UBICACION:' : 'Ubicación:'} 
-                </span> {isDarkMode ? 'GANDIA_VALENCIA_ES' : 'Gandía, Valencia'}
+                </span> {isDarkMode ? 'CASTELLON_DE_LA_PLANA_ES' : 'Castellon de la Plana, España'}
               </li>
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>

@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import Header from "./assets/Components/Header/Header";
 import AboutMe from "./assets/Components/Body/Aboutme";
 import Projects from "./assets/Components/Body/Projects";
-import Skills from "./assets/Components/Body/Skills";
-import Contact from "./assets/Components/Contact/Contact";
 import ContactForm from "./assets/Components/Contact/ContactForm";
 import Hero from "./assets/Components/Body/Hero";
 
@@ -26,12 +24,10 @@ function App() {
   return (
     <div className="min-h-screen theme-transition theme-bg-pattern">
       <Header />
-      
-      <main className="pt-[70px]">
+      <main>
         <Hero />
         <AboutMe />
         <Projects />
-        <Skills />
         <ContactForm />
       </main>
     </div>
