@@ -65,8 +65,8 @@ const Aboutme = () => {
           <div>
             <p className={styles.description}>
               {isDarkMode 
-                ? '// Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web excepcionales.'
-                : 'Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web excepcionales.'
+                ? '// Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web.'
+                : 'Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web.'
               }
             </p>
             <p className={styles.description2}>
