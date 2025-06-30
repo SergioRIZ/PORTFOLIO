@@ -66,7 +66,7 @@ const Hero = () => {
         <p className={styles.subtitle}>
           {isDarkMode 
             ? '// Frontend Developer' 
-            : 'Desarrollador Frontend creando experiencias web modernas y elegantes'
+            : 'Aquí encontrarás mis proyectos, habilidades y formas de contactarme.'
           }
         </p>
 
@@ -97,17 +97,6 @@ const Hero = () => {
                 <span className="text-emerald-400 animate-pulse">_</span>
               </div>
             </div>
-          </div>
-        )}
-
-        {!isDarkMode && (
-          <div className="mt-8 space-x-4">
-            <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300">
-              Ver Proyectos
-            </button>
-            <button className="bg-white/90 backdrop-blur-sm border border-slate-200 text-slate-700 px-8 py-3 rounded-xl font-semibold hover:bg-white hover:shadow-lg hover:scale-105 transition-all duration-300">
-              Contactar
-            </button>
           </div>
         )}
 

@@ -12,13 +12,23 @@ function App() {
     const isDark = savedTheme === 'dark' || 
       (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
     
-    if (isDark) {
-      document.documentElement.classList.add('dark', 'theme-dark');
-      document.documentElement.classList.remove('theme-light');
-    } else {
-      document.documentElement.classList.add('theme-light');
-      document.documentElement.classList.remove('dark', 'theme-dark');
-    }
+    // Aplicar el tema de forma síncrona antes del primer render
+    const applyTheme = () => {
+      if (isDark) {
+        document.documentElement.classList.add('dark', 'theme-dark');
+        document.documentElement.classList.remove('theme-light');
+      } else {
+        document.documentElement.classList.add('theme-light');
+        document.documentElement.classList.remove('dark', 'theme-dark');
+      }
+    };
+
+    // Aplicar inmediatamente
+    applyTheme();
+    
+    // También forzar un reflow para asegurar que los estilos se apliquen
+    document.documentElement.offsetHeight;
+    
   }, []);
 
   return (

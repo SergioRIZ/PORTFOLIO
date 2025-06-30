@@ -23,11 +23,21 @@ const Header = () => {
       setIsDarkMode(document.documentElement.classList.contains('dark'));
     };
 
-    // Verificar tema inicial
-    checkTheme();
+    // Verificar tema inicial - con un pequeño delay para asegurar que las clases ya estén aplicadas
+    const initialCheck = () => {
+      checkTheme();
+      // Forzar un re-render si es necesario
+      setTimeout(checkTheme, 0);
+    };
+    
+    initialCheck();
 
     // Observar cambios en las clases del document
-    const observer = new MutationObserver(checkTheme);
+    const observer = new MutationObserver(() => {
+      // Usar requestAnimationFrame para asegurar que el cambio se procese correctamente
+      requestAnimationFrame(checkTheme);
+    });
+    
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['class']
@@ -42,8 +52,6 @@ const Header = () => {
     { name: 'Proyectos', href: '#projects' },
     { name: 'Contacto', href: '#contact' }
   ];
-
-
 
   // Estilos dinámicos basados en el tema (aplicando los estilos del HTML)
   const getHeaderStyles = () => {
@@ -87,6 +95,7 @@ const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 ${styles.transition} ${styles.base}`}
+      style={{ position: 'fixed' }} // Forzar position fixed por si acaso
     >
       <nav className="max-w-7xl mx-auto px-8">
         <div className="flex items-center justify-between h-[70px]">

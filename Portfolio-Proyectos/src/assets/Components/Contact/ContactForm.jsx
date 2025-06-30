@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Contact from './Contact';
+import emailjs from '@emailjs/browser';
+
+// Configuración de EmailJS
+const EMAILJS_CONFIG = {
+  serviceId: 'service_g4uhltb', // Tu Service ID
+  templateId: 'template_rxzlj6f', // Tu Template ID
+  publicKey: 'tgG4JkSzXGBlVmmdb' // Tu Public Key
+};
 
 // Constantes para validación
 const VALIDATION_RULES = {
@@ -11,6 +19,7 @@ const VALIDATION_RULES = {
 
 const ContactForm = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [forceRender, setForceRender] = useState(0);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -26,17 +35,48 @@ const ContactForm = () => {
     fieldErrors: {}
   });
 
-  // Detectar cambios de tema observando las clases del document (IGUAL QUE EN HEADER)
+  // Inicializar EmailJS
+  useEffect(() => {
+    emailjs.init(EMAILJS_CONFIG.publicKey);
+  }, []);
+
+  // Detectar cambios de tema
   useEffect(() => {
     const checkTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
+      const newTheme = document.documentElement.classList.contains('dark');
+      setIsDarkMode(newTheme);
     };
 
-    // Verificar tema inicial
     checkTheme();
 
-    // Observar cambios en las clases del document
-    const observer = new MutationObserver(checkTheme);
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          checkTheme();
+          
+          setTimeout(() => setForceRender(prev => prev + 1), 10);
+          setTimeout(() => setForceRender(prev => prev + 1), 50);
+          setTimeout(() => setForceRender(prev => prev + 1), 100);
+          
+          setTimeout(() => {
+            const contactSection = document.getElementById('contact');
+            if (contactSection) {
+              contactSection.style.display = 'none';
+              contactSection.offsetHeight;
+              contactSection.style.display = 'flex';
+              
+              const allElements = contactSection.querySelectorAll('*');
+              allElements.forEach(el => {
+                el.style.transform = 'translateZ(0)';
+                el.offsetHeight;
+                el.style.transform = '';
+              });
+            }
+          }, 150);
+        }
+      });
+    });
+    
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['class']
@@ -45,7 +85,7 @@ const ContactForm = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Validación mejorada de email
+  // Validación de email
   const validateEmail = (email) => {
     const regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return regex.test(email) && email.length <= VALIDATION_RULES.email.max;
@@ -71,39 +111,15 @@ const ContactForm = () => {
     return null;
   };
 
-  // Verificación mejorada de email
-  const verifyEmailExists = async (email) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Dominios comunes más completos
-        const commonDomains = [
-          'gmail.com', 'hotmail.com', 'yahoo.com', 'outlook.com', 
-          'icloud.com', 'protonmail.com', 'zoho.com', 'aol.com',
-          'mail.com', 'yandex.com'
-        ];
-        const domain = email.split('@')[1]?.toLowerCase();
-        
-        // Verificación básica de dominio + simulación de verificación más realista
-        const isDomainValid = domain && domain.includes('.') && domain.length > 3;
-        const isCommonDomain = commonDomains.includes(domain);
-        const randomCheck = Math.random() > 0.1; // 90% de probabilidad de éxito
-        
-        resolve(isDomainValid && (isCommonDomain || randomCheck));
-      }, 800);
-    });
-  };
-
-  // Manejar cambios en el formulario con validación en tiempo real
+  // Manejar cambios en el formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
 
-    // Limpiar errores generales
     if (formStatus.error) {
       setFormStatus(prev => ({ ...prev, error: '' }));
     }
 
-    // Validación en tiempo real para campos específicos
     const error = validateField(name, value);
     setFormStatus(prev => ({
       ...prev,
@@ -114,60 +130,22 @@ const ContactForm = () => {
     }));
   };
 
-  // Verificar email cuando pierde el foco
-  const handleEmailBlur = async () => {
-    if (!formData.email || formStatus.fieldErrors.email) return;
-    
-    if (!validateEmail(formData.email)) {
-      setFormStatus(prev => ({ 
-        ...prev, 
-        emailValid: false,
-        fieldErrors: { ...prev.fieldErrors, email: 'Email inválido' }
-      }));
-      return;
-    }
-
-    setFormStatus(prev => ({ ...prev, emailValid: 'checking' }));
-    
-    try {
-      const isValid = await verifyEmailExists(formData.email);
-      setFormStatus(prev => ({ 
-        ...prev, 
-        emailValid: isValid,
-        fieldErrors: {
-          ...prev.fieldErrors,
-          email: isValid ? null : 'El email no parece existir'
-        }
-      }));
-    } catch (err) {
-      console.error('Error verificando email:', err);
-      setFormStatus(prev => ({ 
-        ...prev, 
-        emailValid: false,
-        fieldErrors: { ...prev.fieldErrors, email: 'Error verificando email' }
-      }));
-    }
-  };
-
   // Validación completa del formulario
   const validateForm = () => {
     const errors = {};
 
-    // Validar nombre
     if (!formData.name.trim()) {
       errors.name = 'El nombre es requerido';
     } else if (formData.name.trim().length < VALIDATION_RULES.name.min) {
       errors.name = `Mínimo ${VALIDATION_RULES.name.min} caracteres`;
     }
 
-    // Validar email
     if (!formData.email) {
       errors.email = 'El email es requerido';
     } else if (!validateEmail(formData.email)) {
       errors.email = 'Email inválido';
     }
 
-    // Validar mensaje
     if (!formData.message.trim()) {
       errors.message = 'El mensaje es requerido';
     } else if (formData.message.trim().length < VALIDATION_RULES.message.min) {
@@ -177,7 +155,31 @@ const ContactForm = () => {
     return errors;
   };
 
-  // Enviar formulario con validación mejorada
+  // FUNCIÓN PARA ENVIAR EMAIL REAL
+  const sendEmail = async (templateParams) => {
+    try {
+      console.log('Enviando email con EmailJS...', templateParams);
+      
+      const response = await emailjs.send(
+        EMAILJS_CONFIG.serviceId,
+        EMAILJS_CONFIG.templateId,
+        templateParams,
+        EMAILJS_CONFIG.publicKey
+      );
+      
+      console.log('Email enviado exitosamente:', response);
+      return { success: true, response };
+      
+    } catch (error) {
+      console.error('Error enviando email:', error);
+      return { 
+        success: false, 
+        error: error.text || error.message || 'Error desconocido'
+      };
+    }
+  };
+
+  // Enviar formulario con EMAIL REAL
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -195,63 +197,67 @@ const ContactForm = () => {
     setFormStatus(prev => ({ ...prev, loading: true, error: '' }));
 
     try {
-      // Verificar email una vez más si no se ha verificado
-      if (formStatus.emailValid !== true) {
-        const emailExists = await verifyEmailExists(formData.email);
-        if (!emailExists) {
-          setFormStatus(prev => ({ 
-            ...prev, 
-            loading: false, 
-            error: 'El email no parece existir. Verifica la dirección.',
-            fieldErrors: { ...prev.fieldErrors, email: 'Email no válido' }
-          }));
-          return;
-        }
+      // Preparar datos para EmailJS
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        subject: formData.subject || 'Nuevo mensaje desde Portfolio',
+        message: formData.message,
+        to_email: 'sroldan.portfolio@gmail.com', // Tu email destino
+        reply_to: formData.email
+      };
+
+      // ENVIAR EMAIL REAL
+      const emailResult = await sendEmail(templateParams);
+      
+      if (emailResult.success) {
+        // Éxito - Email enviado
+        setFormStatus({
+          loading: false,
+          success: true,
+          error: '',
+          emailValid: null,
+          fieldErrors: {}
+        });
+        
+        // Limpiar formulario
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+
+        // Ocultar mensaje de éxito después de 5 segundos
+        setTimeout(() => {
+          setFormStatus(prev => ({ ...prev, success: false }));
+        }, 5000);
+        
+      } else {
+        // Error al enviar email
+        setFormStatus(prev => ({ 
+          ...prev, 
+          loading: false, 
+          error: `Error al enviar el email: ${emailResult.error}. Verifica la configuración de EmailJS.`
+        }));
       }
 
-      // Simulación del envío (aquí integrarías con tu backend)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Éxito
-      setFormStatus({
-        loading: false,
-        success: true,
-        error: '',
-        emailValid: null,
-        fieldErrors: {}
-      });
-      
-      // Limpiar formulario
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
-
-      // Ocultar mensaje de éxito después de 5 segundos
-      setTimeout(() => {
-        setFormStatus(prev => ({ ...prev, success: false }));
-      }, 5000);
-
     } catch (err) {
-      console.error('Error al enviar mensaje:', err);
+      console.error('Error general:', err);
       setFormStatus(prev => ({ 
         ...prev, 
         loading: false, 
-        error: 'Error al enviar el mensaje. Inténtalo nuevamente.' 
+        error: 'Error inesperado al enviar el mensaje. Inténtalo nuevamente.' 
       }));
     }
   };
 
-  // Estilos dinámicos usando el mismo patrón que el Header
+  // Estilos dinámicos (mismos que antes)
   const getStyles = () => {
     if (isDarkMode) {
       return {
-        // MODO OSCURO - Exactamente como en el Header
         section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-gray-900 via-black to-gray-900',
         title: 'text-3xl md:text-5xl font-bold mb-12 text-emerald-500 font-mono tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
-        subtitle: 'text-xl mb-8 text-emerald-400 font-mono tracking-wide',
         formContainer: 'p-8 rounded-xl max-w-2xl mx-auto bg-black/95 backdrop-blur-xl border-2 border-emerald-500 shadow-2xl shadow-emerald-500/40',
         successAlert: 'mb-6 p-4 rounded-lg bg-emerald-900/50 backdrop-blur-sm border-2 border-emerald-500 shadow-lg shadow-emerald-500/20',
         successText: 'font-medium text-emerald-400 font-mono tracking-wide',
@@ -260,19 +266,16 @@ const ContactForm = () => {
         input: 'w-full p-3 border rounded-lg focus:ring-2 focus:border-transparent transition-all duration-200 bg-black/90 backdrop-blur-sm text-emerald-400 font-mono placeholder-emerald-600',
         inputNormal: 'border-emerald-500/50 focus:ring-emerald-500 hover:border-emerald-500',
         inputError: 'border-red-500 focus:ring-red-500 shadow-lg shadow-red-500/20',
-        inputValid: 'border-emerald-500 focus:ring-emerald-500 shadow-lg shadow-emerald-500/20',
         fieldError: 'text-sm mt-1 font-medium text-red-400 font-mono',
-        button: 'w-full font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 font-mono tracking-wider uppercase',
+        button: 'w-full font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 font-mono tracking-wider uppercase cursor-pointer',
         buttonEnabled: 'bg-emerald-600 hover:bg-emerald-700 text-black hover:shadow-emerald-500/40 border-2 border-emerald-500',
         buttonDisabled: 'cursor-not-allowed bg-gray-700 text-gray-400 border-2 border-gray-600',
         characterCount: 'text-sm ml-auto text-emerald-500 font-mono'
       };
     } else {
       return {
-        // MODO CLARO - Exactamente como en el Header
         section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 via-white to-slate-100',
         title: 'text-3xl md:text-5xl font-bold mb-12 text-slate-800 font-light tracking-wide',
-        subtitle: 'text-xl mb-8 text-slate-600 font-medium',
         formContainer: 'p-8 rounded-xl max-w-2xl mx-auto bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30',
         successAlert: 'mb-6 p-4 rounded-lg bg-green-100/90 backdrop-blur-sm border border-green-300 shadow-md shadow-green-200/30',
         successText: 'font-medium text-green-800',
@@ -281,9 +284,8 @@ const ContactForm = () => {
         input: 'w-full p-3 border rounded-lg focus:ring-2 focus:border-transparent transition-all duration-200 bg-white/95 backdrop-blur-sm text-slate-800 placeholder-slate-500',
         inputNormal: 'border-slate-300 focus:ring-slate-400 hover:border-slate-400 hover:shadow-md',
         inputError: 'border-red-500 focus:ring-red-500 shadow-sm',
-        inputValid: 'border-green-500 focus:ring-green-500 shadow-sm hover:shadow-md',
         fieldError: 'text-sm mt-1 font-medium text-red-600',
-        button: 'w-full font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 font-medium',
+        button: 'w-full font-semibold py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 font-medium cursor-pointer',
         buttonEnabled: 'text-white hover:shadow-lg hover:scale-[1.02] bg-slate-600 hover:bg-slate-700 hover:shadow-slate-200/50',
         buttonDisabled: 'cursor-not-allowed bg-gray-400 text-gray-200',
         characterCount: 'text-sm ml-auto text-slate-500'
@@ -291,18 +293,14 @@ const ContactForm = () => {
     }
   };
 
-  // Función helper para estilos de input
   const getInputClasses = (fieldName) => {
     const styles = getStyles();
     const hasError = formStatus.fieldErrors[fieldName];
-    const isEmailField = fieldName === 'email';
     
     let classes = styles.input + ' ';
     
     if (hasError) {
       classes += styles.inputError;
-    } else if (isEmailField && formStatus.emailValid === true) {
-      classes += styles.inputValid;
     } else {
       classes += styles.inputNormal;
     }
@@ -313,39 +311,107 @@ const ContactForm = () => {
   const styles = getStyles();
 
   return (
-    <section id="contact" className={styles.section}>
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className={styles.title}>
+    <section 
+      id="contact" 
+      key={`contact-${forceRender}`}
+      className={`${styles.section} force-visible`}
+      style={{
+        opacity: '1 !important',
+        visibility: 'visible !important',
+        display: 'flex !important',
+        transform: 'translateZ(0)',
+        willChange: 'auto',
+        minHeight: '100vh',
+        width: '100%'
+      }}
+    >
+      <div 
+        className="max-w-4xl mx-auto text-center w-full"
+        style={{
+          opacity: '1 !important',
+          visibility: 'visible !important'
+        }}
+      >
+        <h2 
+          className={styles.title}
+          style={{
+            opacity: '1 !important',
+            visibility: 'visible !important'
+          }}
+        >
           {isDarkMode ? '> CONTACTO.EXE' : 'Contacto'}
         </h2>
-        <p className={styles.subtitle}>
-          {isDarkMode ? '// ¿Tienes un proyecto en mente? ¡Hablemos!' : '¿Tienes un proyecto en mente? ¡Hablemos!'}
-        </p>
         
-        <div className="flex justify-center mb-8">
+        <div 
+          className="flex justify-center mb-8"
+          style={{
+            opacity: '1 !important',
+            visibility: 'visible !important',
+            display: 'flex !important'
+          }}
+        >
           <Contact showLabels={true} size={24} className="space-x-8" withBackground={true} />
         </div>
         
-        <div className={styles.formContainer}>
+        <div 
+          className={styles.formContainer}
+          style={{
+            opacity: '1 !important',
+            visibility: 'visible !important',
+            display: 'block !important'
+          }}
+        >
           {formStatus.success && (
-            <div className={styles.successAlert}>
+            <div 
+              className={styles.successAlert}
+              style={{
+                opacity: '1 !important',
+                visibility: 'visible !important',
+                display: 'block !important'
+              }}
+            >
               <p className={styles.successText}>
-                {isDarkMode ? '> STATUS: SUCCESS - Mensaje enviado correctamente!' : '✅ ¡Mensaje enviado correctamente! Te responderé pronto.'}
+                {isDarkMode 
+                  ? '> STATUS: SUCCESS - Email enviado correctamente a sroldan.portfolio@gmail.com!' 
+                  : '✅ ¡Email enviado correctamente! Te responderé pronto.'
+                }
               </p>
             </div>
           )}
           
           {formStatus.error && (
-            <div className={styles.errorAlert}>
+            <div 
+              className={styles.errorAlert}
+              style={{
+                opacity: '1 !important',
+                visibility: 'visible !important',
+                display: 'block !important'
+              }}
+            >
               <p className={styles.errorText}>
                 {isDarkMode ? `> ERROR: ${formStatus.error}` : `❌ ${formStatus.error}`}
               </p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
+          <form 
+            onSubmit={handleSubmit} 
+            className="space-y-6"
+            style={{
+              opacity: '1 !important',
+              visibility: 'visible !important',
+              display: 'block !important'
+            }}
+          >
+            <div 
+              className="grid md:grid-cols-2 gap-6"
+              style={{
+                opacity: '1 !important',
+                visibility: 'visible !important',
+                display: 'grid !important'
+              }}
+            >
+              <div style={{ opacity: '1 !important', visibility: 'visible !important' }}>
                 <input 
                   type="text"
                   name="name"
@@ -355,6 +421,7 @@ const ContactForm = () => {
                   required
                   maxLength={VALIDATION_RULES.name.max}
                   className={getInputClasses('name')}
+                  style={{ opacity: '1 !important', visibility: 'visible !important' }}
                 />
                 {formStatus.fieldErrors.name && (
                   <p className={styles.fieldError}>
@@ -363,41 +430,21 @@ const ContactForm = () => {
                 )}
               </div>
               
-              <div className="relative">
+              <div 
+                className="relative"
+                style={{ opacity: '1 !important', visibility: 'visible !important' }}
+              >
                 <input 
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  onBlur={handleEmailBlur}
                   placeholder={isDarkMode ? '> EMAIL *' : 'Tu email *'} 
                   required
                   maxLength={VALIDATION_RULES.email.max}
                   className={getInputClasses('email')}
+                  style={{ opacity: '1 !important', visibility: 'visible !important' }}
                 />
-                
-                {/* Indicadores visuales del email */}
-                {formStatus.emailValid === 'checking' && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <div className={`animate-spin h-4 w-4 border-2 border-t-transparent rounded-full ${
-                      isDarkMode ? 'border-emerald-500' : 'border-slate-500'
-                    }`}></div>
-                  </div>
-                )}
-                {formStatus.emailValid === true && (
-                  <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
-                    isDarkMode ? 'text-emerald-500' : 'text-green-500'
-                  }`}>
-                    {isDarkMode ? '[OK]' : '✅'}
-                  </div>
-                )}
-                {formStatus.emailValid === false && (
-                  <div className={`absolute right-3 top-1/2 transform -translate-y-1/2 ${
-                    isDarkMode ? 'text-red-500' : 'text-red-500'
-                  }`}>
-                    {isDarkMode ? '[ERR]' : '❌'}
-                  </div>
-                )}
                 
                 {formStatus.fieldErrors.email && (
                   <p className={styles.fieldError}>
@@ -407,7 +454,7 @@ const ContactForm = () => {
               </div>
             </div>
             
-            <div>
+            <div style={{ opacity: '1 !important', visibility: 'visible !important' }}>
               <input 
                 type="text"
                 name="subject"
@@ -416,15 +463,11 @@ const ContactForm = () => {
                 placeholder={isDarkMode ? '> ASUNTO' : 'Asunto'} 
                 maxLength={VALIDATION_RULES.subject.max}
                 className={getInputClasses('subject')}
+                style={{ opacity: '1 !important', visibility: 'visible !important' }}
               />
-              {formStatus.fieldErrors.subject && (
-                <p className={styles.fieldError}>
-                  {isDarkMode ? `> ERROR: ${formStatus.fieldErrors.subject}` : formStatus.fieldErrors.subject}
-                </p>
-              )}
             </div>
             
-            <div>
+            <div style={{ opacity: '1 !important', visibility: 'visible !important' }}>
               <textarea 
                 rows="5"
                 name="message"
@@ -434,8 +477,12 @@ const ContactForm = () => {
                 required
                 maxLength={VALIDATION_RULES.message.max}
                 className={`${getInputClasses('message')} resize-vertical min-h-[120px]`}
+                style={{ opacity: '1 !important', visibility: 'visible !important' }}
               />
-              <div className="flex justify-between items-center mt-1">
+              <div 
+                className="flex justify-between items-center mt-1"
+                style={{ opacity: '1 !important', visibility: 'visible !important', display: 'flex !important' }}
+              >
                 {formStatus.fieldErrors.message && (
                   <p className={styles.fieldError}>
                     {isDarkMode ? `> ERROR: ${formStatus.fieldErrors.message}` : formStatus.fieldErrors.message}
@@ -449,22 +496,23 @@ const ContactForm = () => {
             
             <button 
               type="submit" 
-              disabled={formStatus.loading || formStatus.emailValid === false || Object.keys(formStatus.fieldErrors).some(key => formStatus.fieldErrors[key])}
+              disabled={formStatus.loading || Object.keys(formStatus.fieldErrors).some(key => formStatus.fieldErrors[key])}
               className={`${styles.button} ${
-                formStatus.loading || formStatus.emailValid === false || Object.keys(formStatus.fieldErrors).some(key => formStatus.fieldErrors[key])
+                formStatus.loading || Object.keys(formStatus.fieldErrors).some(key => formStatus.fieldErrors[key])
                   ? styles.buttonDisabled
                   : styles.buttonEnabled
               }`}
+              style={{ opacity: '1 !important', visibility: 'visible !important', display: 'flex !important' }}
             >
               {formStatus.loading ? (
                 <>
                   <div className={`animate-spin h-4 w-4 border-2 border-t-transparent rounded-full ${
                     isDarkMode ? 'border-emerald-500' : 'border-white'
                   }`}></div>
-                  <span>{isDarkMode ? 'ENVIANDO...' : 'Enviando...'}</span>
+                  <span>{isDarkMode ? 'ENVIANDO_EMAIL...' : 'Enviando email...'}</span>
                 </>
               ) : (
-                <span>{isDarkMode ? 'ENVIAR_MENSAJE()' : 'Enviar Mensaje'}</span>
+                <span>{isDarkMode ? 'ENVIAR_EMAIL()' : 'Enviar Email'}</span>
               )}
             </button>
           </form>

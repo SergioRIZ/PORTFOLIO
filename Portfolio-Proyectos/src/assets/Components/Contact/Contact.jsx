@@ -26,19 +26,19 @@ const Contact = ({ className = "", showLabels = false, size = 18, withBackground
   const contactLinks = [
     {
       icon: Github, 
-      href: 'https://github.com/tuusuario', 
+      href: 'https://github.com/SergioRIZ?tab=repositories', 
       label: 'GitHub - Mi código y proyectos',
       text: isDarkMode ? '[GITHUB]' : 'GitHub'
     },
     {
       icon: Linkedin, 
-      href: 'https://linkedin.com/in/tuusuario',
+      href: 'https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile',
       label: 'LinkedIn - Conectemos profesionalmente',
       text: isDarkMode ? '[LINKEDIN]' : 'LinkedIn'
     },
     {
       icon: Mail, 
-      href: 'mailto:sergio_1999_cs@hotmail.com?subject=Hola! Me interesa contactarte&body=Hola, me gustaría hablar contigo sobre...', 
+      href: 'mailto:sroldan.dev@gmail.com?subject=Hola! Me interesa contactarte&body=Hola, me gustaría hablar contigo sobre...', 
       label: 'Email directo - Escríbeme',
       text: isDarkMode ? '[EMAIL]' : 'Email'
     },

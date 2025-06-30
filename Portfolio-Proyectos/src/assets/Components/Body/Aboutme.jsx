@@ -65,14 +65,14 @@ const Aboutme = () => {
           <div>
             <p className={styles.description}>
               {isDarkMode 
-                ? '// Desarrollador apasionado por crear interfaces intuitivas y experiencias web excepcionales.'
+                ? '// Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web excepcionales.'
                 : 'Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web excepcionales.'
               }
             </p>
             <p className={styles.description2}>
               {isDarkMode
-                ? '// Especializado en tecnologías modernas: React, JavaScript, CSS. Siempre buscando mejores prácticas.'
-                : 'Me especializo en tecnologías modernas como React, JavaScript y CSS, siempre buscando las mejores prácticas y las últimas tendencias.'
+                ? '// Me especializo en tecnologías modernas como React/Vite, JavaScript/TypeScript y CSS/TailwindCSS.'
+                : 'Me especializo en tecnologías modernas como React/Vite, JavaScript/TypeScript y CSS/TailwindCSS.'
               }
             </p>
           </div>
@@ -89,17 +89,17 @@ const Aboutme = () => {
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
                   {isDarkMode ? 'UBICACION:' : 'Ubicación:'} 
-                </span> {isDarkMode ? 'CASTELLON_DE_LA_PLANA_ES' : 'Castellon de la Plana, España'}
+                </span> {isDarkMode ? 'Castellon de la Plana, España' : 'Castellon de la Plana, España'}
               </li>
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
                   {isDarkMode ? 'EMAIL:' : 'Email:'} 
-                </span> {isDarkMode ? 'SERGIO_1999_CS@HOTMAIL.COM' : 'sergio_1999_cs@hotmail.com'}
+                </span> {isDarkMode ? 'sroldan.dev@gmail.com' : 'sroldan.dev@gmail.com'}
               </li>
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
                   {isDarkMode ? 'EXPERIENCIA:' : 'Experiencia:'} 
-                </span> {isDarkMode ? '2_YEARS++' : '2+ años'}
+                </span> {isDarkMode ? '1_YEARS++' : '1+ años'}
               </li>
             </ul>
           </div>
