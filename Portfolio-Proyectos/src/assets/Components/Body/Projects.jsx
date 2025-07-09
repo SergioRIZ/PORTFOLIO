@@ -85,7 +85,7 @@ const Projects = () => {
     if (isDarkMode) {
       return {
         section: 'min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900',
-        title: 'text-3xl md:text-5xl font-bold text-center mb-16 text-emerald-500 font-mono tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.5)] leading-tight',
+        title: 'text-3xl md:text-5xl font-bold text-center mb-12 text-emerald-500 font-mono tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.5)] leading-tight',
         projectCard: 'bg-black/95 backdrop-blur-xl border-2 border-emerald-500 shadow-2xl shadow-emerald-500/40 rounded-none overflow-hidden hover:shadow-emerald-500/60 transition-all duration-300 hover:scale-[1.02]',
         projectTitle: 'text-2xl font-semibold mb-3 text-emerald-500 font-mono tracking-wider uppercase',
         projectDescription: 'text-emerald-400 font-mono text-base tracking-wide mb-6 leading-relaxed',
@@ -94,7 +94,7 @@ const Projects = () => {
     } else {
       return {
         section: 'min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-slate-50 via-white to-slate-100',
-        title: 'text-4xl md:text-5xl font-light text-center mb-16 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide leading-tight',
+        title: 'text-4xl md:text-5xl font-light text-center mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide leading-tight',
         projectCard: 'bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30 rounded-xl overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 hover:scale-[1.02]',
         projectTitle: 'text-2xl font-semibold mb-3 text-slate-800',
         projectDescription: 'text-slate-600 font-medium text-base mb-6 leading-relaxed',
