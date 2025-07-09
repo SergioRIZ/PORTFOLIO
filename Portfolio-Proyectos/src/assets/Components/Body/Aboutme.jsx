@@ -31,7 +31,7 @@ const Aboutme = () => {
         title: 'text-3xl md:text-5xl font-bold text-center mb-12 text-emerald-500 font-mono tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
         description: 'text-lg text-emerald-400 font-mono tracking-wide mb-6',
         description2: 'text-lg text-emerald-400 font-mono tracking-wide',
-        infoCard: 'bg-black/95 backdrop-blur-xl border-2 border-emerald-500 shadow-2xl shadow-emerald-500/40 p-6 rounded-none',
+        infoCard: 'bg-black/95 backdrop-blur-xl border-2 border-emerald-500 shadow-2xl shadow-emerald-500/40 p-6 rounded-none transition-all duration-300 ease-in-out hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] hover:scale-105',
         infoTitle: 'text-xl font-semibold mb-4 text-emerald-500 font-mono tracking-wider uppercase',
         infoList: 'space-y-2 text-emerald-400 font-mono',
         infoItem: 'text-emerald-400 font-mono',
@@ -41,10 +41,10 @@ const Aboutme = () => {
       return {
         // MODO CLARO
         section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 via-white to-slate-100',
-        title: 'text-3xl md:text-5xl font-bold text-center mb-12 text-slate-800 font-light tracking-wide',
+        title: 'text-3xl md:text-5xl font-bold text-center mb-12 text-slate-800 font-light tracking-wide bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide',
         description: 'text-lg text-slate-600 font-medium mb-6',
         description2: 'text-lg text-slate-600 font-medium',
-        infoCard: 'bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30 p-6 rounded-xl',
+        infoCard: 'bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30 p-6 rounded-xl transition-all duration-300 ease-in-out hover:scale-105',
         infoTitle: 'text-xl font-semibold mb-4 text-slate-800',
         infoList: 'space-y-2 text-slate-600',
         infoItem: 'text-slate-600',
@@ -59,7 +59,7 @@ const Aboutme = () => {
     <section id="about" className={styles.section}>
       <div className="max-w-4xl mx-auto">
         <h2 className={styles.title}>
-          {isDarkMode ? '> ABOUT_ME.EXE' : 'Sobre mí'}
+          {isDarkMode ? '> ABOUT_ME.EXE' : 'Sobre mi'}
         </h2>
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -71,8 +71,8 @@ const Aboutme = () => {
             </p>
             <p className={styles.description2}>
               {isDarkMode
-                ? '// Me especializo en tecnologías modernas como React/Vite, JavaScript/TypeScript y CSS/TailwindCSS.'
-                : 'Me especializo en tecnologías modernas como React/Vite, JavaScript/TypeScript y CSS/TailwindCSS.'
+                ? '// Me especializo en tecnologías como React/Vite, JavaScript/TypeScript, CSS/TailwindCSS y JAVA.'
+                : 'Me especializo en tecnologías como React/Vite, JavaScript/TypeScript, CSS/TailwindCSS y JAVA.'
               }
             </p>
           </div>

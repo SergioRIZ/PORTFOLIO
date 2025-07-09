@@ -275,7 +275,7 @@ const ContactForm = () => {
     } else {
       return {
         section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 via-white to-slate-100',
-        title: 'text-3xl md:text-5xl font-bold mb-12 text-slate-800 font-light tracking-wide',
+        title: 'text-3xl md:text-5xl font-bold mb-12 text-slate-800 font-light tracking-wide bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent',
         formContainer: 'p-8 rounded-xl max-w-2xl mx-auto bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30',
         successAlert: 'mb-6 p-4 rounded-lg bg-green-100/90 backdrop-blur-sm border border-green-300 shadow-md shadow-green-200/30',
         successText: 'font-medium text-green-800',

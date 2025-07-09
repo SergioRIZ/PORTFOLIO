@@ -3,7 +3,7 @@ import { ExternalLink } from 'lucide-react';
 
 const Projects = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [forceRender, setForceRender] = useState(0); // Forzar re-render
+  const [forceRender, setForceRender] = useState(0);
 
   // Detectar cambios de tema observando las clases del document
   useEffect(() => {
@@ -12,30 +12,23 @@ const Projects = () => {
       setIsDarkMode(newTheme);
     };
 
-    // Verificar tema inicial
     checkTheme();
 
-    // Observar cambios en las clases del document
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.attributeName === 'class') {
           checkTheme();
-          
-          // SOLUCIÓN AGRESIVA: Forzar múltiples re-renders
           setTimeout(() => setForceRender(prev => prev + 1), 10);
           setTimeout(() => setForceRender(prev => prev + 1), 50);
           setTimeout(() => setForceRender(prev => prev + 1), 100);
           
-          // Forzar repaint del DOM
           setTimeout(() => {
             const projectsSection = document.getElementById('projects');
             if (projectsSection) {
-              // Método más agresivo
               projectsSection.style.display = 'none';
-              projectsSection.offsetHeight; // Trigger reflow
+              projectsSection.offsetHeight;
               projectsSection.style.display = 'flex';
               
-              // Forzar re-paint de todos los elementos hijos
               const allElements = projectsSection.querySelectorAll('*');
               allElements.forEach(el => {
                 el.style.transform = 'translateZ(0)';
@@ -87,12 +80,12 @@ const Projects = () => {
     },
   ];
 
-  // Estilos dinámicos
+  // Estilos dinámicos corregidos
   const getStyles = () => {
     if (isDarkMode) {
       return {
-        section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-gray-900 via-black to-gray-900',
-        title: 'text-3xl md:text-5xl font-bold text-center mb-12 text-emerald-500 font-mono tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
+        section: 'min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-gray-900 via-black to-gray-900',
+        title: 'text-3xl md:text-5xl font-bold text-center mb-16 text-emerald-500 font-mono tracking-wider drop-shadow-[0_0_10px_rgba(16,185,129,0.5)] leading-tight',
         projectCard: 'bg-black/95 backdrop-blur-xl border-2 border-emerald-500 shadow-2xl shadow-emerald-500/40 rounded-none overflow-hidden hover:shadow-emerald-500/60 transition-all duration-300 hover:scale-[1.02]',
         projectTitle: 'text-2xl font-semibold mb-3 text-emerald-500 font-mono tracking-wider uppercase',
         projectDescription: 'text-emerald-400 font-mono text-base tracking-wide mb-6 leading-relaxed',
@@ -100,8 +93,8 @@ const Projects = () => {
       };
     } else {
       return {
-        section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 via-white to-slate-100',
-        title: 'flex justify-center text-6xl mb-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide',
+        section: 'min-h-screen flex items-center justify-center px-4 py-20 bg-gradient-to-br from-slate-50 via-white to-slate-100',
+        title: 'text-4xl md:text-5xl font-light text-center mb-16 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide leading-tight',
         projectCard: 'bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30 rounded-xl overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 hover:scale-[1.02]',
         projectTitle: 'text-2xl font-semibold mb-3 text-slate-800',
         projectDescription: 'text-slate-600 font-medium text-base mb-6 leading-relaxed',
@@ -135,7 +128,7 @@ const Projects = () => {
   return (
     <section 
       id="projects" 
-      key={`projects-${forceRender}`} // Forzar re-render completo
+      key={`projects-${forceRender}`}
       className={`${styles.section} force-visible`}
       style={{
         opacity: '1 !important',
@@ -154,15 +147,21 @@ const Projects = () => {
           visibility: 'visible !important'
         }}
       >
-        <h2 
-          className={styles.title}
-          style={{
-            opacity: '1 !important',
-            visibility: 'visible !important'
-          }}
-        >
-          {isDarkMode ? '> PROJECTS.PORTFOLIO' : 'PROYECTOS'}
-        </h2>
+        <div className="w-full text-center mb-16">
+          <h2 
+            className={styles.title}
+            style={{
+              opacity: '1 !important',
+              visibility: 'visible !important',
+              display: 'inline-block',
+              overflow: 'visible',
+              lineHeight: '1.2',
+              paddingBottom: '8px'
+            }}
+          >
+            {isDarkMode ? '> PROJECTS.PORTFOLIO' : 'Proyectos'}
+          </h2>
+        </div>
         
         <div 
           className="flex justify-center items-stretch gap-8 flex-wrap w-full"
@@ -174,7 +173,7 @@ const Projects = () => {
         >
           {projects.map((project, index) => (
             <div
-              key={`${project.id}-${forceRender}-${index}`} // Key único que cambia
+              key={`${project.id}-${forceRender}-${index}`}
               onClick={() => window.open(project.liveUrl, '_blank')}
               className={`${styles.projectCard} cursor-pointer block w-full max-w-4xl flex-1`}
               style={{
@@ -192,7 +191,7 @@ const Projects = () => {
                   opacity: '1 !important',
                   visibility: 'visible !important',
                   display: 'block !important',
-                  backgroundColor: isDarkMode ? '#1f2937' : '#f8fafc' // Fallback si no carga imagen
+                  backgroundColor: isDarkMode ? '#1f2937' : '#f8fafc'
                 }}
               >
                 {project.image && (
@@ -206,7 +205,6 @@ const Projects = () => {
                       display: 'block !important'
                     }}
                     onError={(e) => {
-                      // Si falla la imagen, mostrar placeholder
                       e.target.style.display = 'none';
                       e.target.parentElement.innerHTML = `
                         <div class="w-full h-full flex items-center justify-center ${isDarkMode ? 'bg-gray-800 text-emerald-500' : 'bg-gray-100 text-slate-600'}">
