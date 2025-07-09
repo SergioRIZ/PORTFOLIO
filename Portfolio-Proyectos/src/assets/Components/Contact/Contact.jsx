@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Github, Linkedin, Phone } from 'lucide-react';
+import { Mail, Github, Linkedin } from 'lucide-react';
 
 const Contact = ({ className = "", showLabels = false, size = 18, withBackground = false }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -32,22 +32,16 @@ const Contact = ({ className = "", showLabels = false, size = 18, withBackground
     },
     {
       icon: Linkedin, 
-      href: 'https://www.linkedin.com/public-profile/settings?trk=d_flagship3_profile_self_view_public_profile',
+      href: 'https://www.linkedin.com/in/sergiori/',
       label: 'LinkedIn - Conectemos profesionalmente',
       text: isDarkMode ? '[LINKEDIN]' : 'LinkedIn'
     },
     {
-      icon: Mail, 
-      href: 'mailto:sroldan.dev@gmail.com?subject=Hola! Me interesa contactarte&body=Hola, me gustaría hablar contigo sobre...', 
-      label: 'Email directo - Escríbeme',
-      text: isDarkMode ? '[EMAIL]' : 'Email'
+    icon: Mail,
+    href: 'https://mail.google.com/mail/?view=cm&to=sroldan.dev@gmail.com&su=Hola! Me interesa contactarte&body=Hola, me gustaría hablar contigo sobre...',
+    label: 'Email directo - Escríbeme',
+    text: isDarkMode ? '[EMAIL]' : 'Email'
     },
-    { 
-      icon: Phone, 
-      href: 'tel:+34123456789', 
-      label: 'Llamada directa',
-      text: isDarkMode ? '[PHONE]' : 'Teléfono'
-    }
   ];
 
   // Estilos dinámicos usando el mismo patrón que el Header
@@ -86,8 +80,8 @@ const Contact = ({ className = "", showLabels = false, size = 18, withBackground
             <a
               key={contact.label}
               href={contact.href}
-              target={contact.href.startsWith('mailto:') || contact.href.startsWith('tel:') ? '_self' : '_blank'}
-              rel={contact.href.startsWith('mailto:') || contact.href.startsWith('tel:') ? '' : 'noopener noreferrer'}
+              target={contact.href.startsWith('mailto:') ? '_self' : '_blank'}
+              rel={contact.href.startsWith('mailto:') ? '' : 'noopener noreferrer'}
               className={`flex items-center ${showLabels ? 'space-x-2' : ''} ${styles.link}`}
               aria-label={contact.label}
               title={contact.label}

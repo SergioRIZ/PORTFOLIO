@@ -101,7 +101,7 @@ const Projects = () => {
     } else {
       return {
         section: 'min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-slate-50 via-white to-slate-100',
-        title: 'text-3xl md:text-5xl font-bold text-center mb-12 text-slate-800 font-light tracking-wide',
+        title: 'flex justify-center text-6xl mb-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-wide',
         projectCard: 'bg-white/98 backdrop-blur-md border border-slate-200/80 shadow-lg shadow-slate-200/30 rounded-xl overflow-hidden hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 hover:scale-[1.02]',
         projectTitle: 'text-2xl font-semibold mb-3 text-slate-800',
         projectDescription: 'text-slate-600 font-medium text-base mb-6 leading-relaxed',
