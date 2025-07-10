@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Contact from './Contact';
 import emailjs from '@emailjs/browser';
+import { useTheme } from '../../../hooks/useTheme';
 
 // Configuración de EmailJS
 const EMAILJS_CONFIG = {
@@ -18,8 +19,8 @@ const VALIDATION_RULES = {
 };
 
 const ContactForm = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [forceRender, setForceRender] = useState(0);
+  const { isDarkMode } = useTheme();
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -38,51 +39,6 @@ const ContactForm = () => {
   // Inicializar EmailJS
   useEffect(() => {
     emailjs.init(EMAILJS_CONFIG.publicKey);
-  }, []);
-
-  // Detectar cambios de tema
-  useEffect(() => {
-    const checkTheme = () => {
-      const newTheme = document.documentElement.classList.contains('dark');
-      setIsDarkMode(newTheme);
-    };
-
-    checkTheme();
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          checkTheme();
-          
-          setTimeout(() => setForceRender(prev => prev + 1), 10);
-          setTimeout(() => setForceRender(prev => prev + 1), 50);
-          setTimeout(() => setForceRender(prev => prev + 1), 100);
-          
-          setTimeout(() => {
-            const contactSection = document.getElementById('contact');
-            if (contactSection) {
-              contactSection.style.display = 'none';
-              contactSection.offsetHeight;
-              contactSection.style.display = 'flex';
-              
-              const allElements = contactSection.querySelectorAll('*');
-              allElements.forEach(el => {
-                el.style.transform = 'translateZ(0)';
-                el.offsetHeight;
-                el.style.transform = '';
-              });
-            }
-          }, 150);
-        }
-      });
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   // Validación de email
@@ -252,7 +208,7 @@ const ContactForm = () => {
     }
   };
 
-  // Estilos dinámicos (mismos que antes)
+  // Estilos dinámicos (simplificados)
   const getStyles = () => {
     if (isDarkMode) {
       return {
@@ -311,65 +267,19 @@ const ContactForm = () => {
   const styles = getStyles();
 
   return (
-    <section 
-      id="contact" 
-      key={`contact-${forceRender}`}
-      className={`${styles.section} force-visible`}
-      style={{
-        opacity: '1 !important',
-        visibility: 'visible !important',
-        display: 'flex !important',
-        transform: 'translateZ(0)',
-        willChange: 'auto',
-        minHeight: '100vh',
-        width: '100%'
-      }}
-    >
-      <div 
-        className="max-w-4xl mx-auto text-center w-full"
-        style={{
-          opacity: '1 !important',
-          visibility: 'visible !important'
-        }}
-      >
-        <h2 
-          className={styles.title}
-          style={{
-            opacity: '1 !important',
-            visibility: 'visible !important'
-          }}
-        >
+    <section id="contact" className={styles.section}>
+      <div className="max-w-4xl mx-auto text-center w-full">
+        <h2 className={styles.title}>
           {isDarkMode ? '> CONTACTO.EXE' : 'Contacto'}
         </h2>
         
-        <div 
-          className="flex justify-center mb-8"
-          style={{
-            opacity: '1 !important',
-            visibility: 'visible !important',
-            display: 'flex !important'
-          }}
-        >
+        <div className="flex justify-center mb-8">
           <Contact showLabels={true} size={24} className="space-x-8" withBackground={true} />
         </div>
         
-        <div 
-          className={styles.formContainer}
-          style={{
-            opacity: '1 !important',
-            visibility: 'visible !important',
-            display: 'block !important'
-          }}
-        >
+        <div className={styles.formContainer}>
           {formStatus.success && (
-            <div 
-              className={styles.successAlert}
-              style={{
-                opacity: '1 !important',
-                visibility: 'visible !important',
-                display: 'block !important'
-              }}
-            >
+            <div className={styles.successAlert}>
               <p className={styles.successText}>
                 {isDarkMode 
                   ? '> STATUS: SUCCESS - Email enviado correctamente a sroldan.portfolio@gmail.com!' 
@@ -380,38 +290,16 @@ const ContactForm = () => {
           )}
           
           {formStatus.error && (
-            <div 
-              className={styles.errorAlert}
-              style={{
-                opacity: '1 !important',
-                visibility: 'visible !important',
-                display: 'block !important'
-              }}
-            >
+            <div className={styles.errorAlert}>
               <p className={styles.errorText}>
                 {isDarkMode ? `> ERROR: ${formStatus.error}` : `❌ ${formStatus.error}`}
               </p>
             </div>
           )}
 
-          <form 
-            onSubmit={handleSubmit} 
-            className="space-y-6"
-            style={{
-              opacity: '1 !important',
-              visibility: 'visible !important',
-              display: 'block !important'
-            }}
-          >
-            <div 
-              className="grid md:grid-cols-2 gap-6"
-              style={{
-                opacity: '1 !important',
-                visibility: 'visible !important',
-                display: 'grid !important'
-              }}
-            >
-              <div style={{ opacity: '1 !important', visibility: 'visible !important' }}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
                 <input 
                   type="text"
                   name="name"
@@ -421,7 +309,6 @@ const ContactForm = () => {
                   required
                   maxLength={VALIDATION_RULES.name.max}
                   className={getInputClasses('name')}
-                  style={{ opacity: '1 !important', visibility: 'visible !important' }}
                 />
                 {formStatus.fieldErrors.name && (
                   <p className={styles.fieldError}>
@@ -430,10 +317,7 @@ const ContactForm = () => {
                 )}
               </div>
               
-              <div 
-                className="relative"
-                style={{ opacity: '1 !important', visibility: 'visible !important' }}
-              >
+              <div className="relative">
                 <input 
                   type="email"
                   name="email"
@@ -443,7 +327,6 @@ const ContactForm = () => {
                   required
                   maxLength={VALIDATION_RULES.email.max}
                   className={getInputClasses('email')}
-                  style={{ opacity: '1 !important', visibility: 'visible !important' }}
                 />
                 
                 {formStatus.fieldErrors.email && (
@@ -454,7 +337,7 @@ const ContactForm = () => {
               </div>
             </div>
             
-            <div style={{ opacity: '1 !important', visibility: 'visible !important' }}>
+            <div>
               <input 
                 type="text"
                 name="subject"
@@ -463,11 +346,10 @@ const ContactForm = () => {
                 placeholder={isDarkMode ? '> ASUNTO' : 'Asunto'} 
                 maxLength={VALIDATION_RULES.subject.max}
                 className={getInputClasses('subject')}
-                style={{ opacity: '1 !important', visibility: 'visible !important' }}
               />
             </div>
             
-            <div style={{ opacity: '1 !important', visibility: 'visible !important' }}>
+            <div>
               <textarea 
                 rows="5"
                 name="message"
@@ -477,12 +359,8 @@ const ContactForm = () => {
                 required
                 maxLength={VALIDATION_RULES.message.max}
                 className={`${getInputClasses('message')} resize-vertical min-h-[120px]`}
-                style={{ opacity: '1 !important', visibility: 'visible !important' }}
               />
-              <div 
-                className="flex justify-between items-center mt-1"
-                style={{ opacity: '1 !important', visibility: 'visible !important', display: 'flex !important' }}
-              >
+              <div className="flex justify-between items-center mt-1">
                 {formStatus.fieldErrors.message && (
                   <p className={styles.fieldError}>
                     {isDarkMode ? `> ERROR: ${formStatus.fieldErrors.message}` : formStatus.fieldErrors.message}
@@ -502,7 +380,6 @@ const ContactForm = () => {
                   ? styles.buttonDisabled
                   : styles.buttonEnabled
               }`}
-              style={{ opacity: '1 !important', visibility: 'visible !important', display: 'flex !important' }}
             >
               {formStatus.loading ? (
                 <>

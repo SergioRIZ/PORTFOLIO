@@ -1,26 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useTheme } from '../../../hooks/useTheme';
 
 const Aboutme = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Detectar cambios de tema observando las clases del document (IGUAL QUE EN HEADER)
-  useEffect(() => {
-    const checkTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    };
-
-    // Verificar tema inicial
-    checkTheme();
-
-    // Observar cambios en las clases del document
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
-  }, []);
+  const { isDarkMode } = useTheme();
 
   // Estilos dinámicos usando el mismo patrón que el Header
   const getStyles = () => {

@@ -1,55 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ExternalLink } from 'lucide-react';
+import { useTheme } from '../../../hooks/useTheme';
 
 const Projects = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [forceRender, setForceRender] = useState(0);
+  const { isDarkMode } = useTheme();
+  
+  // Debug - remove this after testing
+  console.log('Projects component - isDarkMode:', isDarkMode);
+  console.log('Document classes:', document.documentElement.classList.toString());
 
-  // Detectar cambios de tema observando las clases del document
-  useEffect(() => {
-    const checkTheme = () => {
-      const newTheme = document.documentElement.classList.contains('dark');
-      setIsDarkMode(newTheme);
-    };
-
-    checkTheme();
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          checkTheme();
-          setTimeout(() => setForceRender(prev => prev + 1), 10);
-          setTimeout(() => setForceRender(prev => prev + 1), 50);
-          setTimeout(() => setForceRender(prev => prev + 1), 100);
-          
-          setTimeout(() => {
-            const projectsSection = document.getElementById('projects');
-            if (projectsSection) {
-              projectsSection.style.display = 'none';
-              projectsSection.offsetHeight;
-              projectsSection.style.display = 'flex';
-              
-              const allElements = projectsSection.querySelectorAll('*');
-              allElements.forEach(el => {
-                el.style.transform = 'translateZ(0)';
-                el.offsetHeight;
-                el.style.transform = '';
-              });
-            }
-          }, 150);
-        }
-      });
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const projects = [
+  // Move projects inside component to ensure they update with theme changes
+  const getProjects = () => [
     {
       id: 1,
       title: isDarkMode ? "POKEDEX.EXE" : "Pokedex",
@@ -80,7 +41,9 @@ const Projects = () => {
     },
   ];
 
-  // Estilos dinámicos corregidos
+  const projects = getProjects();
+
+  // Simplified styles using your theme hook
   const getStyles = () => {
     if (isDarkMode) {
       return {
@@ -126,84 +89,29 @@ const Projects = () => {
   const styles = getStyles();
 
   return (
-    <section 
-      id="projects" 
-      key={`projects-${forceRender}`}
-      className={`${styles.section} force-visible`}
-      style={{
-        opacity: '1 !important',
-        visibility: 'visible !important',
-        display: 'flex !important',
-        transform: 'translateZ(0)',
-        willChange: 'auto',
-        minHeight: '100vh',
-        width: '100%'
-      }}
-    >
-      <div 
-        className="max-w-8xl mx-auto w-full"
-        style={{
-          opacity: '1 !important',
-          visibility: 'visible !important'
-        }}
-      >
+    <section id="projects" className={styles.section}>
+      <div className="max-w-8xl mx-auto w-full">
         <div className="w-full text-center mb-16">
-          <h2 
-            className={styles.title}
-            style={{
-              opacity: '1 !important',
-              visibility: 'visible !important',
-              display: 'inline-block',
-              overflow: 'visible',
-              lineHeight: '1.2',
-              paddingBottom: '8px'
-            }}
-          >
+          <h2 className={styles.title}>
             {isDarkMode ? '> PROJECTS.PORTFOLIO' : 'Proyectos'}
           </h2>
         </div>
         
-        <div 
-          className="flex justify-center items-stretch gap-8 flex-wrap w-full"
-          style={{
-            opacity: '1 !important',
-            visibility: 'visible !important',
-            display: 'flex !important'
-          }}
-        >
-          {projects.map((project, index) => (
+        <div className="flex justify-center items-stretch gap-8 flex-wrap w-full">
+          {projects.map((project) => (
             <div
-              key={`${project.id}-${forceRender}-${index}`}
+              key={project.id}
               onClick={() => window.open(project.liveUrl, '_blank')}
               className={`${styles.projectCard} cursor-pointer block w-full max-w-4xl flex-1`}
-              style={{
-                opacity: '1 !important',
-                visibility: 'visible !important',
-                display: 'block !important',
-                transform: 'translateZ(0)',
-                minHeight: '500px'
-              }}
             >
               {/* Imagen del proyecto */}
-              <div 
-                className={`h-80 relative overflow-hidden ${isDarkMode ? 'border-b-2 border-emerald-500' : ''}`}
-                style={{
-                  opacity: '1 !important',
-                  visibility: 'visible !important',
-                  display: 'block !important',
-                  backgroundColor: isDarkMode ? '#1f2937' : '#f8fafc'
-                }}
-              >
+              <div className={`h-80 relative overflow-hidden ${isDarkMode ? 'border-b-2 border-emerald-500' : ''}`}>
                 {project.image && (
                   <img 
                     src={project.image}
                     alt={`Preview de ${project.title}`}
                     className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                    style={{
-                      opacity: '1 !important',
-                      visibility: 'visible !important',
-                      display: 'block !important'
-                    }}
+                    loading="lazy"
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.parentElement.innerHTML = `
@@ -217,38 +125,21 @@ const Projects = () => {
               </div>
               
               {/* Contenido del proyecto */}
-              <div 
-                className="p-8 flex flex-col h-full"
-                style={{
-                  opacity: '1 !important',
-                  visibility: 'visible !important',
-                  display: 'flex !important'
-                }}
-              >
-                <h3 
-                  className={styles.projectTitle}
-                  style={{ opacity: '1 !important', visibility: 'visible !important' }}
-                >
+              <div className="p-8 flex flex-col h-full">
+                <h3 className={styles.projectTitle}>
                   {project.title}
                 </h3>
                 
-                <p 
-                  className={styles.projectDescription}
-                  style={{ opacity: '1 !important', visibility: 'visible !important' }}
-                >
+                <p className={styles.projectDescription}>
                   {project.description}
                 </p>
                 
                 {/* Tecnologías */}
-                <div 
-                  className={styles.techContainer}
-                  style={{ opacity: '1 !important', visibility: 'visible !important', display: 'flex !important' }}
-                >
+                <div className={styles.techContainer}>
                   {project.technologies.map((tech, techIndex) => (
                     <span 
-                      key={`${tech.name}-${techIndex}-${forceRender}`}
+                      key={`${tech.name}-${techIndex}`}
                       className={`px-4 py-2 rounded-full ${getTechColor(tech.color)}`}
-                      style={{ opacity: '1 !important', visibility: 'visible !important' }}
                     >
                       {tech.name}
                     </span>
@@ -256,10 +147,7 @@ const Projects = () => {
                 </div>
                 
                 {/* Indicador de click */}
-                <div 
-                  className="flex items-center justify-center mt-auto pt-6"
-                  style={{ opacity: '1 !important', visibility: 'visible !important', display: 'flex !important' }}
-                >
+                <div className="flex items-center justify-center mt-auto pt-6">
                   <div className={`flex items-center gap-2 ${
                     isDarkMode 
                       ? 'text-emerald-400 font-mono text-sm tracking-wider uppercase' 

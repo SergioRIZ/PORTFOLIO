@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import ButtonToggle from '../Toggle-Light/ButtonToggle';
+import { useTheme } from '../../../hooks/useTheme';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDarkMode } = useTheme();
 
   // Detectar scroll para cambiar el estilo del header
   useEffect(() => {
@@ -15,35 +16,6 @@ const Header = () => {
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Detectar cambios de tema observando las clases del document
-  useEffect(() => {
-    const checkTheme = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    };
-
-    // Verificar tema inicial - con un pequeño delay para asegurar que las clases ya estén aplicadas
-    const initialCheck = () => {
-      checkTheme();
-      // Forzar un re-render si es necesario
-      setTimeout(checkTheme, 0);
-    };
-    
-    initialCheck();
-
-    // Observar cambios en las clases del document
-    const observer = new MutationObserver(() => {
-      // Usar requestAnimationFrame para asegurar que el cambio se procese correctamente
-      requestAnimationFrame(checkTheme);
-    });
-    
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   const navItems = [
