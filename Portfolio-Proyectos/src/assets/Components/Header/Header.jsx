@@ -18,6 +18,29 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu when clicking outside or on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    const handleClickOutside = (event) => {
+      if (isMenuOpen && !event.target.closest('nav')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    document.addEventListener('click', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   const navItems = [
     { name: 'Inicio', href: '#home' },
     { name: 'Sobre mí', href: '#about' },
@@ -25,19 +48,18 @@ const Header = () => {
     { name: 'Contacto', href: '#contact' }
   ];
 
-  // Estilos dinámicos basados en el tema (aplicando los estilos del HTML)
+  // Estilos dinámicos basados en el tema (mejorados para responsive)
   const getHeaderStyles = () => {
     if (isDarkMode) {
       return {
-        // MODO OSCURO - Basado en el CSS del HTML
+        // MODO OSCURO - Responsive optimizado
         base: isScrolled 
           ? 'bg-black/95 backdrop-blur-xl border-b-2 border-t-2 border-emerald-500 shadow-2xl shadow-emerald-500/40' 
           : 'bg-black/90 backdrop-blur-xl border-b-2 border-t-2 border-emerald-500 shadow-lg shadow-emerald-500/30',
         transition: 'transition-all duration-300 ease-in-out',
-        logo: 'text-2xl font-bold text-emerald-500 font-mono tracking-wider drop-shadow-lg hover:scale-105 transition-transform duration-200',
+        logo: 'text-lg sm:text-xl md:text-2xl font-bold text-emerald-500 font-mono tracking-wider drop-shadow-lg hover:scale-105 transition-transform duration-200',
         logoGlow: 'drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
-        navLink: 'text-emerald-500 font-mono text-sm tracking-wider uppercase border-l-2 border-transparent hover:border-l-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-400 px-4 py-1.5 transition-all duration-200 hover:shadow-[inset_0_0_10px_rgba(16,185,129,0.2)]',
-        socialLink: '',
+        navLink: 'text-emerald-500 font-mono text-xs sm:text-sm tracking-wider uppercase border-l-2 border-transparent hover:border-l-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-400 px-2 sm:px-4 py-1.5 transition-all duration-200 hover:shadow-[inset_0_0_10px_rgba(16,185,129,0.2)]',
         mobileButton: 'p-2 bg-transparent border-2 border-emerald-500 text-emerald-500 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/40 transition-all duration-200 hover:scale-105',
         mobileMenu: 'bg-gradient-to-br from-black/95 via-gray-900/95 to-black/95 backdrop-blur-xl border border-emerald-500/30 rounded-none mt-2 shadow-2xl shadow-emerald-500/20',
         mobileLinkHover: 'hover:bg-emerald-500/10 hover:border-l-emerald-500',
@@ -45,15 +67,14 @@ const Header = () => {
       };
     } else {
       return {
-        // MODO CLARO - Basado en el CSS del HTML
+        // MODO CLARO - Responsive optimizado
         base: isScrolled 
           ? 'bg-white/98 backdrop-blur-md border-b border-slate-200/80 shadow-lg shadow-slate-200/30' 
           : 'bg-white/95 backdrop-blur-md border-b border-slate-200/60 shadow-md shadow-slate-200/20',
         transition: 'transition-all duration-300 ease-out',
-        logo: 'text-2xl font-light text-slate-800 tracking-wide hover:scale-105 hover:text-slate-900 transition-all duration-200',
+        logo: 'text-lg sm:text-xl md:text-2xl font-light text-slate-800 tracking-wide hover:scale-105 hover:text-slate-900 transition-all duration-200',
         logoGlow: '',
-        navLink: 'text-slate-600 hover:text-slate-800 hover:bg-slate-100/60 px-4 py-2 rounded-xl font-medium transition-all duration-200 hover:scale-[1.02]',
-        socialLink: '',
+        navLink: 'text-slate-600 hover:text-slate-800 hover:bg-slate-100/60 px-2 sm:px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02]',
         mobileButton: 'p-2.5 bg-white/90 backdrop-blur-sm border border-slate-200/60 text-slate-600 hover:text-slate-800 hover:bg-white/95 hover:border-slate-300/80 rounded-xl shadow-sm hover:shadow-lg hover:shadow-slate-200/50 hover:scale-[1.02] transition-all duration-300 ease-out',
         mobileMenu: 'bg-white/95 backdrop-blur-xl border border-slate-200/60 rounded-xl mt-2 shadow-xl shadow-slate-200/30',
         mobileLinkHover: 'hover:bg-slate-100/60',
@@ -67,23 +88,29 @@ const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 ${styles.transition} ${styles.base}`}
-      style={{ position: 'fixed' }} // Forzar position fixed por si acaso
+      style={{ position: 'fixed' }}
     >
-      <nav className="max-w-7xl mx-auto px-8">
-        <div className="flex items-center justify-between h-[70px]">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-[70px]">
           
-          {/* Logo */}
-          <div className="flex-shrink-0">
+          {/* Logo - Responsive text sizes */}
+          <div className="flex-shrink-0 min-w-0">
             <a 
               href="#home" 
-              className={`${styles.logo} ${styles.logoGlow}`}
+              className={`${styles.logo} ${styles.logoGlow} truncate`}
+              title={isDarkMode ? 'SERGIORIZ.EXE' : 'Portfolio'}
             >
-              {isDarkMode ? '> SERGIORIZ.EXE' : 'Portfolio'}
+              <span className="hidden sm:inline">
+                {isDarkMode ? '> SERGIORIZ.EXE' : 'Portfolio'}
+              </span>
+              <span className="sm:hidden">
+                {isDarkMode ? '> SR.EXE' : 'Portfolio'}
+              </span>
             </a>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          {/* Desktop Navigation - Hidden on mobile/tablet */}
+          <div className="hidden lg:flex items-center space-x-2 xl:space-x-8">
             {navItems.map((item) => {
               const darkText = {
                 'Inicio': '[INICIO]',
@@ -105,14 +132,14 @@ const Header = () => {
           </div>
 
           {/* Desktop Social Links & Theme Toggle */}
-          <div className="hidden lg:flex items-center space-x-4">            
+          <div className="hidden lg:flex items-center space-x-2 sm:space-x-4">            
             {/* Theme Toggle */}
             <div className={isDarkMode ? 'shadow-lg shadow-emerald-500/40' : ''}>
               <ButtonToggle />
             </div>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile/Tablet controls */}
           <div className="lg:hidden flex items-center space-x-2">
             <div className={isDarkMode ? 'shadow-lg shadow-emerald-500/40' : ''}>
               <ButtonToggle />
@@ -122,13 +149,14 @@ const Header = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={styles.mobileButton}
               aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile/Tablet Navigation Menu - Improved responsive design */}
         <div 
           className={`lg:hidden transition-all duration-300 ease-in-out ${
             isMenuOpen 
@@ -136,7 +164,7 @@ const Header = () => {
               : 'max-h-0 opacity-0 pointer-events-none'
           } overflow-hidden`}
         >
-          <div className={`px-2 pt-2 pb-6 space-y-1 ${styles.mobileMenu}`}>
+          <div className={`px-2 pt-2 pb-4 sm:pb-6 space-y-1 ${styles.mobileMenu}`}>
             {navItems.map((item) => {
               const darkText = {
                 'Inicio': '[INICIO]',
@@ -150,13 +178,13 @@ const Header = () => {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className={`block px-4 py-3 ${styles.navLink} ${styles.mobileLinkHover} font-medium ${isDarkMode ? 'border-l-2 border-transparent' : 'rounded-lg'}`}
+                  className={`block px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base ${styles.navLink} ${styles.mobileLinkHover} font-medium ${isDarkMode ? 'border-l-2 border-transparent' : 'rounded-lg'}`}
                 >
                   {isDarkMode ? darkText[item.name] : item.name}
                 </a>
               );
             })}
-            </div>
+          </div>
         </div>
       </nav>
     </header>
