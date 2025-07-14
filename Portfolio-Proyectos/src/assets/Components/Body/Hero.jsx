@@ -75,13 +75,13 @@ const Hero = () => {
               
               <div className="text-emerald-300 text-xs sm:text-sm leading-relaxed">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-2">
-                  <div>drwxr-xr-x React.js</div>
-                  <div>drwxr-xr-x Vite</div>
-                  <div>drwxr-xr-x JavaScript</div>
-                  <div>drwxr-xr-x JAVA</div>
-                  <div>drwxr-xr-x CSS3 & Tailwind</div>
-                  <div>drwxr-xr-x Unity</div>
-                  <div className="sm:col-span-2">-rw-r--r-- C#</div>
+                  drwxr-xr-x React.js<br />
+                  drwxr-xr-x Vite<br />
+                  drwxr-xr-x JavaScript<br />
+                  drwxr-xr-x JAVA<br />
+                  drwxr-xr-x CSS3 & Tailwind<br />
+                  drwxr-xr-x Unity<br />
+                  drwxr-xr-x C#<br />
                 </div>
               </div>
               
@@ -105,14 +105,30 @@ const Hero = () => {
         {isDarkMode && (
           <div className={styles.buttonContainer}>
             <button 
-              onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => {
+                const projectsSection = document.getElementById('projects');
+                if (projectsSection) {
+                  projectsSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
+              }}
               className={styles.primaryButton}
             >
               <span className="hidden sm:inline">VIEW_PROJECTS()</span>
               <span className="sm:hidden">PROJECTS()</span>
             </button>
             <button 
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => {
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                  contactSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                  });
+                }
+              }}
               className={styles.secondaryButton}
             >
               <span className="hidden sm:inline">EXECUTE_CONTACT()</span>

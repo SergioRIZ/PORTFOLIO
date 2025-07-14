@@ -6,17 +6,35 @@ import { useTheme } from '../../../hooks/useTheme';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const { isDarkMode } = useTheme();
 
-  // Detectar scroll para cambiar el estilo del header
+  // Detectar scroll para cambiar el estilo del header Y controlar visibilidad
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      
+      // Cambiar estilo basado en scroll
+      setIsScrolled(currentScrollY > 20);
+      
+      // Controlar visibilidad basada en dirección del scroll
+      if (currentScrollY < lastScrollY || currentScrollY < 100) {
+        // Scrolling up o cerca del top → mostrar header
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down y no cerca del top → ocultar header
+        setIsVisible(false);
+        // Cerrar menú móvil si está abierto
+        setIsMenuOpen(false);
+      }
+      
+      setLastScrollY(currentScrollY);
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   // Close mobile menu when clicking outside or on window resize
   useEffect(() => {
@@ -78,84 +96,84 @@ const Header = () => {
   const styles = getHeaderStyles();
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 ${styles.transition} ${styles.base}`}
-      style={{ position: 'fixed' }}
-    >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-[70px]">
-          
-          {/* Logo - Responsive text sizes */}
-          <div className="flex-shrink-0 min-w-0">
-            <a 
-              href="#home" 
-              className={`${styles.logo} ${styles.logoGlow} truncate`}
-              title={isDarkMode ? 'SERGIORIZ.EXE' : 'Portfolio'}
-            >
-              <span className="hidden sm:inline">
-                {isDarkMode ? '> SERGIORIZ.EXE' : 'Portfolio'}
-              </span>
-              <span className="sm:hidden">
-                {isDarkMode ? '> SR.EXE' : 'Portfolio'}
-              </span>
-            </a>
-          </div>
-
-          {/* Desktop Navigation - Hidden on mobile/tablet */}
-          <div className="hidden lg:flex items-center space-x-2 xl:space-x-8">
-            {navItems.map((item) => {
-              const darkText = {
-                'Inicio': '[INICIO]',
-                'Sobre mí': '[ABOUT]',
-                'Proyectos': '[PROJECTS]',
-                'Contacto': '[CONTACT]'
-              };
-              
-              return (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={styles.navLink}
-                >
-                  {isDarkMode ? darkText[item.name] : item.name}
-                </a>
-              );
-            })}
-          </div>
-
-          {/* Desktop Social Links & Theme Toggle */}
-          <div className="hidden lg:flex items-center space-x-2 sm:space-x-4">            
-            {/* Theme Toggle */}
-            <div className={isDarkMode ? 'shadow-lg shadow-emerald-500/40' : ''}>
-              <ButtonToggle />
-            </div>
-          </div>
-
-          {/* Mobile/Tablet controls */}
-          <div className="lg:hidden flex items-center space-x-2">
-            <div className={isDarkMode ? 'shadow-lg shadow-emerald-500/40' : ''}>
-              <ButtonToggle />
-            </div>
+    <>
+      <header 
+        className={`fixed top-0 left-0 right-0 z-50 ${styles.transition} ${styles.base} transition-transform duration-300 ease-in-out ${
+          isVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+        style={{ position: 'fixed' }}
+      >
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-[70px]">
             
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={styles.mobileButton}
-              aria-label="Toggle menu"
-              aria-expanded={isMenuOpen}
-            >
-              {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
+            {/* Logo - Responsive text sizes */}
+            <div className="flex-shrink-0 min-w-0">
+              <a 
+                href="#home" 
+                className={`${styles.logo} ${styles.logoGlow} truncate`}
+                title={isDarkMode ? 'SERGIORIZ.EXE' : 'Portfolio'}
+              >
+                <span className="hidden sm:inline">
+                  {isDarkMode ? '> SERGIORIZ.EXE' : 'Portfolio'}
+                </span>
+                <span className="sm:hidden">
+                  {isDarkMode ? '> SR.EXE' : 'Portfolio'}
+                </span>
+              </a>
+            </div>
 
-        {/* Mobile/Tablet Navigation Menu - Push content down instead of overlay */}
-        <div 
-          className={`lg:hidden transition-all duration-300 ease-in-out ${
-            isMenuOpen 
-              ? 'max-h-screen opacity-100' 
-              : 'max-h-0 opacity-0 pointer-events-none'
-          } overflow-hidden`}
-        >
+            {/* Desktop Navigation - Hidden on mobile/tablet */}
+            <div className="hidden lg:flex items-center space-x-2 xl:space-x-8">
+              {navItems.map((item) => {
+                const darkText = {
+                  'Inicio': '[INICIO]',
+                  'Sobre mí': '[ABOUT]',
+                  'Proyectos': '[PROJECTS]',
+                  'Contacto': '[CONTACT]'
+                };
+                
+                return (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className={styles.navLink}
+                  >
+                    {isDarkMode ? darkText[item.name] : item.name}
+                  </a>
+                );
+              })}
+            </div>
+
+            {/* Desktop Social Links & Theme Toggle */}
+            <div className="hidden lg:flex items-center space-x-2 sm:space-x-4">            
+              {/* Theme Toggle */}
+              <div className={isDarkMode ? 'shadow-lg shadow-emerald-500/40' : ''}>
+                <ButtonToggle />
+              </div>
+            </div>
+
+            {/* Mobile/Tablet controls */}
+            <div className="lg:hidden flex items-center space-x-2">
+              <div className={isDarkMode ? 'shadow-lg shadow-emerald-500/40' : ''}>
+                <ButtonToggle />
+              </div>
+              
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className={styles.mobileButton}
+                aria-label="Toggle menu"
+                aria-expanded={isMenuOpen}
+              >
+                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      {/* Mobile/Tablet Navigation Menu - Only show if header is visible */}
+      {isMenuOpen && isVisible && (
+        <div className="lg:hidden fixed top-16 sm:top-[70px] left-0 right-0 z-40">
           <div className={`${styles.mobileMenu} mx-4 my-2`}>
             <div className="p-4 sm:p-6 space-y-3">
               {navItems.map((item) => {
@@ -188,8 +206,16 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </nav>
-    </header>
+      )}
+
+      {/* Backdrop to close menu when clicking outside - Only show if header and menu are visible */}
+      {isMenuOpen && isVisible && (
+        <div 
+          className="lg:hidden fixed inset-0 z-30 bg-black/20"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
+    </>
   );
 };
 
