@@ -26,18 +26,10 @@ const Header = () => {
       }
     };
 
-    const handleClickOutside = (event) => {
-      if (isMenuOpen && !event.target.closest('nav')) {
-        setIsMenuOpen(false);
-      }
-    };
-
     window.addEventListener('resize', handleResize);
-    document.addEventListener('click', handleClickOutside);
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      document.removeEventListener('click', handleClickOutside);
     };
   }, [isMenuOpen]);
 
@@ -156,49 +148,46 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile/Tablet Navigation Menu - Fixed full-screen design */}
-        {isMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-40 mt-16 sm:mt-[70px]">
-            {/* Backdrop overlay */}
-            <div 
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={() => setIsMenuOpen(false)}
-            />
-            
-            {/* Menu content */}
-            <div className={`relative ${styles.mobileMenu} m-4 max-h-[calc(100vh-100px)] overflow-y-auto`}>
-              <div className="p-4 sm:p-6 space-y-3">
-                {navItems.map((item) => {
-                  const darkText = {
-                    'Inicio': '[INICIO]',
-                    'Sobre mí': '[ABOUT]',
-                    'Proyectos': '[PROJECTS]',
-                    'Contacto': '[CONTACT]'
-                  };
-                  
-                  return (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`block px-4 py-3 text-base ${styles.navLink} ${styles.mobileLinkHover} font-medium ${isDarkMode ? 'border-l-2 border-transparent rounded-none' : 'rounded-lg'} transition-all duration-200`}
-                    >
-                      {isDarkMode ? darkText[item.name] : item.name}
-                    </a>
-                  );
-                })}
+        {/* Mobile/Tablet Navigation Menu - Push content down instead of overlay */}
+        <div 
+          className={`lg:hidden transition-all duration-300 ease-in-out ${
+            isMenuOpen 
+              ? 'max-h-screen opacity-100' 
+              : 'max-h-0 opacity-0 pointer-events-none'
+          } overflow-hidden`}
+        >
+          <div className={`${styles.mobileMenu} mx-4 my-2`}>
+            <div className="p-4 sm:p-6 space-y-3">
+              {navItems.map((item) => {
+                const darkText = {
+                  'Inicio': '[INICIO]',
+                  'Sobre mí': '[ABOUT]',
+                  'Proyectos': '[PROJECTS]',
+                  'Contacto': '[CONTACT]'
+                };
                 
-                {/* Separador visual */}
-                <div className={`my-4 h-px ${isDarkMode ? 'bg-emerald-500/30' : 'bg-slate-200'}`} />
-                
-                {/* Información adicional en mobile */}
-                <div className={`px-4 py-2 text-center ${isDarkMode ? 'text-emerald-400/80 font-mono text-sm' : 'text-slate-500 text-sm'}`}>
-                  {isDarkMode ? '// SERGIO_RIZ PORTFOLIO' : 'Portfolio de Sergio'}
-                </div>
+                return (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block px-4 py-3 text-base ${styles.navLink} ${styles.mobileLinkHover} font-medium ${isDarkMode ? 'border-l-2 border-transparent rounded-none' : 'rounded-lg'} transition-all duration-200`}
+                  >
+                    {isDarkMode ? darkText[item.name] : item.name}
+                  </a>
+                );
+              })}
+              
+              {/* Separador visual */}
+              <div className={`my-4 h-px ${isDarkMode ? 'bg-emerald-500/30' : 'bg-slate-200'}`} />
+              
+              {/* Información adicional en mobile */}
+              <div className={`px-4 py-2 text-center ${isDarkMode ? 'text-emerald-400/80 font-mono text-sm' : 'text-slate-500 text-sm'}`}>
+                {isDarkMode ? '// SERGIO_RIZ PORTFOLIO' : 'Portfolio de Sergio'}
               </div>
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </header>
   );
