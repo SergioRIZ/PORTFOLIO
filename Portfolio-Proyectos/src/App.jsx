@@ -4,6 +4,7 @@ import AboutMe from "./assets/Components/Body/Aboutme";
 import Projects from "./assets/Components/Body/Projects";
 import ContactForm from "./assets/Components/Contact/ContactForm";
 import Hero from "./assets/Components/Body/Hero";
+import Skills from './assets/Components/Skills/Skills';
 
 function App() {
   // Inicializar tema al cargar la aplicación
@@ -37,6 +38,7 @@ function App() {
       <main>
         <Hero />
         <AboutMe />
+        <Skills />
         <Projects />
         <ContactForm />
       </main>
