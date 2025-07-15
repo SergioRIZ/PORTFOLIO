@@ -7,7 +7,8 @@ const Skills = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   // Skills data organizadas por categorías lógicas con colores específicos
-  const skillsData = {
+  // MOVER DENTRO DEL COMPONENTE para que se actualice con cambios de tema
+  const getSkillsData = () => ({
     frontend: {
       title: isDarkMode ? 'FRONTEND.DEV' : 'Frontend',
       skills: [
@@ -41,7 +42,9 @@ const Skills = () => {
         { name: 'Hostalia', level: 100, icon: '/hostalia.svg', color: '#8B5A3C' }
       ]
     }
-  };
+  });
+
+  const skillsData = getSkillsData();
 
   // Detectar cuando la sección está visible para animar
   useEffect(() => {
@@ -71,7 +74,48 @@ const Skills = () => {
     }
 
     return () => observer.disconnect();
-  }, [isVisible]);
+  }, [isVisible, skillsData]);
+
+  // AÑADIR: Hook para forzar re-render cuando cambia el tema
+  useEffect(() => {
+    // Forzar repaint específico para Skills cuando cambia el tema
+    const forceRepaint = () => {
+      requestAnimationFrame(() => {
+        const skillsSection = document.getElementById('skills');
+        if (skillsSection) {
+          // Técnica 1: Transform trick
+          skillsSection.style.transform = 'translateZ(0)';
+          skillsSection.offsetHeight;
+          skillsSection.style.transform = '';
+          
+          // Técnica 2: Display trick
+          skillsSection.style.display = 'none';
+          skillsSection.offsetHeight;
+          skillsSection.style.display = '';
+          
+          // Forzar repaint de las cards específicamente
+          const skillCards = skillsSection.querySelectorAll('[class*="bg-black"], [class*="bg-white"], [class*="backdrop-blur"]');
+          skillCards.forEach(card => {
+            card.style.transform = 'translateZ(0)';
+            card.offsetHeight;
+            card.style.transform = '';
+          });
+          
+          // Forzar repaint de todos los elementos hijos
+          const allChildren = skillsSection.querySelectorAll('*');
+          allChildren.forEach(child => {
+            child.style.transform = 'translateZ(0)';
+            child.offsetHeight;
+            child.style.transform = '';
+          });
+        }
+      });
+    };
+
+    // Delay pequeño para permitir que el DOM se actualice
+    const timer = setTimeout(forceRepaint, 50);
+    return () => clearTimeout(timer);
+  }, [isDarkMode]);
 
   // Estilos dinámicos para responsive
   const getStyles = () => {
@@ -91,7 +135,15 @@ const Skills = () => {
         skillLevel: 'text-emerald-500 font-mono text-xs font-bold',
         progressContainer: 'relative h-1.5 sm:h-2 bg-gray-800 border border-emerald-500/30 rounded-none overflow-hidden',
         progressBar: 'h-full transition-all duration-1000 ease-out',
-        progressGlow: 'absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-300/20 animate-pulse'
+        progressGlow: 'absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-emerald-300/20 animate-pulse',
+        statsContainer: 'mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6',
+        statCard: 'text-center p-3 sm:p-4 rounded-lg bg-black/60 border border-emerald-500/30',
+        statNumber: 'text-lg sm:text-xl font-bold text-emerald-500 font-mono',
+        statLabel: 'text-xs sm:text-sm text-emerald-400 font-mono',
+        terminalContainer: 'mt-8 sm:mt-12 text-center',
+        terminalCard: 'inline-block bg-black/90 border-2 border-emerald-500 px-4 sm:px-6 py-2 sm:py-3 rounded-none shadow-lg shadow-emerald-500/40',
+        terminalPrompt: 'text-emerald-400 font-mono text-xs sm:text-sm tracking-wider',
+        terminalOutput: 'text-emerald-300 font-mono text-xs sm:text-sm mt-1'
       };
     } else {
       return {
@@ -109,7 +161,15 @@ const Skills = () => {
         skillLevel: 'text-slate-600 font-semibold text-xs',
         progressContainer: 'relative h-1.5 sm:h-2 bg-slate-200 rounded-full overflow-hidden',
         progressBar: 'h-full transition-all duration-1000 ease-out rounded-full',
-        progressGlow: ''
+        progressGlow: '',
+        statsContainer: 'mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6',
+        statCard: 'text-center p-3 sm:p-4 rounded-lg bg-white/80 border border-slate-200',
+        statNumber: 'text-lg sm:text-xl font-bold text-slate-800',
+        statLabel: 'text-xs sm:text-sm text-slate-600',
+        terminalContainer: '',
+        terminalCard: '',
+        terminalPrompt: '',
+        terminalOutput: ''
       };
     }
   };
@@ -220,13 +280,13 @@ const Skills = () => {
         </div>
 
         {/* Estadísticas y terminal footer */}
-        <div className="mt-12 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className={styles.statsContainer}>
           {Object.entries(skillsData).map(([categoryKey, category]) => (
-            <div key={categoryKey} className={`text-center p-3 sm:p-4 rounded-lg ${isDarkMode ? 'bg-black/60 border border-emerald-500/30' : 'bg-white/80 border border-slate-200'}`}>
-              <div className={`text-lg sm:text-xl font-bold ${isDarkMode ? 'text-emerald-500 font-mono' : 'text-slate-800'}`}>
+            <div key={categoryKey} className={styles.statCard}>
+              <div className={styles.statNumber}>
                 {category.skills.length}
               </div>
-              <div className={`text-xs sm:text-sm ${isDarkMode ? 'text-emerald-400 font-mono' : 'text-slate-600'}`}>
+              <div className={styles.statLabel}>
                 {isDarkMode ? category.title.toUpperCase() : category.title}
               </div>
             </div>
@@ -235,12 +295,12 @@ const Skills = () => {
 
         {/* Terminal footer solo en modo oscuro */}
         {isDarkMode && (
-          <div className="mt-8 sm:mt-12 text-center">
-            <div className="inline-block bg-black/90 border-2 border-emerald-500 px-4 sm:px-6 py-2 sm:py-3 rounded-none shadow-lg shadow-emerald-500/40">
-              <p className="text-emerald-400 font-mono text-xs sm:text-sm tracking-wider">
+          <div className={styles.terminalContainer}>
+            <div className={styles.terminalCard}>
+              <p className={styles.terminalPrompt}>
                 <span className="text-emerald-500">sergio@portfolio:~$</span> cat skills.json | grep "level" | wc -l
               </p>
-              <p className="text-emerald-300 font-mono text-xs sm:text-sm mt-1">
+              <p className={styles.terminalOutput}>
                 &gt; {Object.values(skillsData).reduce((total, category) => total + category.skills.length, 0)} skills loaded successfully
               </p>
             </div>

@@ -51,9 +51,58 @@ const Header = () => {
     };
   }, [isMenuOpen]);
 
+  // FUNCIÓN PARA NAVEGACIÓN SUAVE
+  const smoothScrollTo = (targetId, e) => {
+    e.preventDefault();
+    
+    // Cerrar menú móvil si está abierto
+    setIsMenuOpen(false);
+    
+    const targetElement = document.querySelector(targetId);
+    if (!targetElement) return;
+
+    // Calcular offset para compensar el header fijo
+    const headerHeight = 70; // Altura aproximada del header
+    const targetPosition = targetElement.offsetTop - headerHeight;
+
+    // Scroll suave con comportamiento personalizado
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+
+    // Alternativa con animación personalizada más fluida (opcional)
+    /*
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    const duration = 800; // Duración en ms
+    let start = null;
+
+    const step = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = timestamp - start;
+      const percentage = Math.min(progress / duration, 1);
+      
+      // Easing function para una transición más suave
+      const easeInOutCubic = percentage < 0.5 
+        ? 4 * percentage * percentage * percentage 
+        : 1 - Math.pow(-2 * percentage + 2, 3) / 2;
+      
+      window.scrollTo(0, startPosition + (distance * easeInOutCubic));
+      
+      if (progress < duration) {
+        requestAnimationFrame(step);
+      }
+    };
+    
+    requestAnimationFrame(step);
+    */
+  };
+
   const navItems = [
     { name: 'Inicio', href: '#home' },
     { name: 'Sobre mí', href: '#about' },
+    { name: 'Habilidades', href: '#skills' },
     { name: 'Proyectos', href: '#projects' },
     { name: 'Contacto', href: '#contact' }
   ];
@@ -69,7 +118,7 @@ const Header = () => {
         transition: 'transition-all duration-300 ease-in-out',
         logo: 'text-lg sm:text-xl md:text-2xl font-bold text-emerald-500 font-mono tracking-wider drop-shadow-lg hover:scale-105 transition-transform duration-200',
         logoGlow: 'drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]',
-        navLink: 'text-emerald-500 font-mono text-xs sm:text-sm tracking-wider uppercase border-l-2 border-transparent hover:border-l-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-400 px-2 sm:px-4 py-1.5 transition-all duration-200 hover:shadow-[inset_0_0_10px_rgba(16,185,129,0.2)]',
+        navLink: 'text-emerald-500 font-mono text-xs sm:text-sm tracking-wider uppercase border-l-2 border-transparent hover:border-l-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-400 px-2 sm:px-4 py-1.5 transition-all duration-200 hover:shadow-[inset_0_0_10px_rgba(16,185,129,0.2)] cursor-pointer',
         mobileButton: 'p-2 bg-transparent border-2 border-emerald-500 text-emerald-500 hover:bg-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/40 transition-all duration-200 hover:scale-105',
         mobileMenu: 'bg-gradient-to-br from-black/95 via-gray-900/95 to-black/95 backdrop-blur-xl border-2 border-emerald-500 shadow-2xl shadow-emerald-500/40 rounded-lg overflow-hidden',
         mobileLinkHover: 'hover:bg-emerald-500/10 hover:border-l-emerald-500',
@@ -84,7 +133,7 @@ const Header = () => {
         transition: 'transition-all duration-300 ease-out',
         logo: 'text-lg sm:text-xl md:text-2xl font-light text-slate-800 tracking-wide hover:scale-105 hover:text-slate-900 transition-all duration-200',
         logoGlow: '',
-        navLink: 'text-slate-600 hover:text-slate-800 hover:bg-slate-100/60 px-2 sm:px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02]',
+        navLink: 'text-slate-600 hover:text-slate-800 hover:bg-slate-100/60 px-2 sm:px-4 py-2 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 hover:scale-[1.02] cursor-pointer',
         mobileButton: 'p-2.5 bg-white/90 backdrop-blur-sm border border-slate-200/60 text-slate-600 hover:text-slate-800 hover:bg-white/95 hover:border-slate-300/80 rounded-xl shadow-sm hover:shadow-lg hover:shadow-slate-200/50 hover:scale-[1.02] transition-all duration-300 ease-out',
         mobileMenu: 'bg-white/98 backdrop-blur-xl border-2 border-slate-200 shadow-xl shadow-slate-200/50 rounded-lg overflow-hidden',
         mobileLinkHover: 'hover:bg-slate-100/60',
@@ -106,11 +155,12 @@ const Header = () => {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-[70px]">
             
-            {/* Logo - Responsive text sizes */}
+            {/* Logo - Responsive text sizes CON SCROLL SUAVE */}
             <div className="flex-shrink-0 min-w-0">
               <a 
-                href="#home" 
-                className={`${styles.logo} ${styles.logoGlow} truncate`}
+                href="#home"
+                onClick={(e) => smoothScrollTo('#home', e)}
+                className={`${styles.logo} ${styles.logoGlow} truncate cursor-pointer`}
                 title={isDarkMode ? 'SERGIORIZ.EXE' : 'Portfolio'}
               >
                 <span className="hidden sm:inline">
@@ -122,12 +172,13 @@ const Header = () => {
               </a>
             </div>
 
-            {/* Desktop Navigation - Hidden on mobile/tablet */}
+            {/* Desktop Navigation - Hidden on mobile/tablet CON SCROLL SUAVE */}
             <div className="hidden lg:flex items-center space-x-2 xl:space-x-8">
               {navItems.map((item) => {
                 const darkText = {
                   'Inicio': '[INICIO]',
                   'Sobre mí': '[ABOUT]',
+                  'Habilidades': '[SKILLS]',
                   'Proyectos': '[PROJECTS]',
                   'Contacto': '[CONTACT]'
                 };
@@ -136,6 +187,7 @@ const Header = () => {
                   <a
                     key={item.name}
                     href={item.href}
+                    onClick={(e) => smoothScrollTo(item.href, e)}
                     className={styles.navLink}
                   >
                     {isDarkMode ? darkText[item.name] : item.name}
@@ -171,7 +223,7 @@ const Header = () => {
         </nav>
       </header>
 
-      {/* Mobile/Tablet Navigation Menu - Only show if header is visible */}
+      {/* Mobile/Tablet Navigation Menu - Only show if header is visible CON SCROLL SUAVE */}
       {isMenuOpen && isVisible && (
         <div className="lg:hidden fixed top-16 sm:top-[70px] left-0 right-0 z-40">
           <div className={`${styles.mobileMenu} mx-4 my-2`}>
@@ -180,6 +232,7 @@ const Header = () => {
                 const darkText = {
                   'Inicio': '[INICIO]',
                   'Sobre mí': '[ABOUT]',
+                  'Habilidades': '[SKILLS]',
                   'Proyectos': '[PROJECTS]',
                   'Contacto': '[CONTACT]'
                 };
@@ -188,7 +241,7 @@ const Header = () => {
                   <a
                     key={item.name}
                     href={item.href}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={(e) => smoothScrollTo(item.href, e)}
                     className={`block px-4 py-3 text-base ${styles.navLink} ${styles.mobileLinkHover} font-medium ${isDarkMode ? 'border-l-2 border-transparent rounded-none' : 'rounded-lg'} transition-all duration-200`}
                   >
                     {isDarkMode ? darkText[item.name] : item.name}
