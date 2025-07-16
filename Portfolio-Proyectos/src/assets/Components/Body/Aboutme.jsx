@@ -61,7 +61,7 @@ const Aboutme = () => {
           <div className={styles.textContainer}>
             <p className={styles.description}>
               {isDarkMode 
-                ? '// Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web.'
+                ? '// I´am a passionate developer focused on creating intuitive user interfaces and web experiences.'
                 : 'Soy un desarrollador apasionado por crear interfaces de usuario intuitivas y experiencias web.'
               }
             </p>
@@ -70,20 +70,14 @@ const Aboutme = () => {
                 ? (
                   <>
                     <span className="hidden sm:inline">
-                      // Me especializo en tecnologías como React/Vite, JavaScript/TypeScript, CSS/TailwindCSS y JAVA.
-                    </span>
-                    <span className="sm:hidden">
-                      // Especializado en React, JS/TS, CSS/Tailwind y JAVA.
+                      // I focus on technologies such as React/Vite, JavaScript, CSS/TailwindCSS, Java and Unity.
                     </span>
                   </>
                 )
                 : (
                   <>
                     <span className="hidden sm:inline">
-                      Me especializo en tecnologías como React/Vite, JavaScript/TypeScript, CSS/TailwindCSS y JAVA.
-                    </span>
-                    <span className="sm:hidden">
-                      Especializado en React, JS/TS, CSS/Tailwind y JAVA.
+                      Me especializo en tecnologías como React/Vite, JavaScript, CSS/TailwindCSS, JAVA y Unity.
                     </span>
                   </>
                 )
@@ -109,7 +103,7 @@ const Aboutme = () => {
             <ul className={styles.infoList}>
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
-                  {isDarkMode ? 'NOMBRE:' : 'Nombre:'} 
+                  {isDarkMode ? 'NAME:' : 'Nombre:'} 
                 </span>
                 <br className="sm:hidden" />
                 <span className="sm:ml-2">
@@ -129,7 +123,7 @@ const Aboutme = () => {
               
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
-                  {isDarkMode ? 'UBICACION:' : 'Ubicación:'} 
+                  {isDarkMode ? 'LOCATION:' : 'Ubicación:'} 
                 </span>
                 <br className="sm:hidden" />
                 <span className="sm:ml-2">
@@ -159,7 +153,7 @@ const Aboutme = () => {
               
               <li className={styles.infoItem}>
                 <span className={styles.infoLabel}>
-                  {isDarkMode ? 'EXPERIENCIA:' : 'Experiencia:'} 
+                  {isDarkMode ? 'EXPERIENCE:' : 'Experiencia:'} 
                 </span>
                 <br className="sm:hidden" />
                 <span className="sm:ml-2">

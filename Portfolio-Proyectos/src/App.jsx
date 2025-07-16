@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import Header from "./assets/Components/Header/Header";
 import AboutMe from "./assets/Components/Body/Aboutme";
-import Projects from "./assets/Components/Body/Projects";
+import Projects from "./assets/Components/Body/Project/Projects";
 import ContactForm from "./assets/Components/Contact/ContactForm";
-import Hero from "./assets/Components/Body/Hero";
+import Hero from "./assets/Components/Body/Hero/Hero";
 import Skills from './assets/Components/Skills/Skills';
 
 function App() {
