@@ -5,6 +5,8 @@ export const getSkillsData = (isDarkMode) => ({
     skills: [
       { name: 'React.js', level: 100, icon: '/react.svg', color: '#61DAFB' },
       { name: 'JavaScript', level: 100, icon: '/javascript.svg', color: '#F7DF1E' },
+      { name: 'TypeScript', level: 100, icon: '/typescript.svg', color: '#F7DF1E' },
+      { name: 'NextJS', level: 100, icon: '/nextjs.svg', color: '#F7DF1E' },
       { name: 'HTML5', level: 100, icon: '/html5.svg', color: '#E34F26' },
       { name: 'CSS3', level: 100, icon: '/css3.svg', color: '#1572B6' },
       { name: 'Tailwind CSS', level: 100, icon: '/tailwind.svg', color: '#06B6D4' },
