@@ -34,6 +34,24 @@ export const getProjectsData = (isDarkMode) => [
       { name: isDarkMode ? "WEBGL" : "WebGL", color: "green" }
     ]
   },
+  {
+    id: 3,
+    title: isDarkMode ? "TASKFLOW.EXE" : "TaskFlow",
+    description: isDarkMode 
+      ? "// Advanced task management app with categories, filters, search, and real-time editing. Features include task completion tracking, statistics, and responsive design with glassmorphism effects." 
+      : "Aplicación avanzada de gestión de tareas con categorías, filtros, búsqueda y edición en tiempo real. Incluye seguimiento de completitud, estadísticas y diseño responsive con efectos glassmorphism.",
+    shortDescription: isDarkMode
+      ? "// Gestor de tareas con categorías, filtros y estadísticas."
+      : "Gestor de tareas con categorías, filtros y estadísticas.",
+    liveUrl: "https://tu-taskflow-deploy.vercel.app/", // Reemplaza con tu URL de deploy
+    image: "/taskflow.png", // Asegúrate de agregar esta imagen a tu carpeta public
+    technologies: [
+      { name: isDarkMode ? "NEXT.JS" : "Next.js", color: "blue" },
+      { name: isDarkMode ? "REACT.JS" : "React", color: "blue" },
+      { name: isDarkMode ? "TYPESCRIPT" : "TypeScript", color: "purple" },
+      { name: isDarkMode ? "TAILWINDCSS" : "TailwindCSS", color: "green" }
+    ]
+  }
 ];
 
 // Función para obtener configuración de colores de tecnologías
