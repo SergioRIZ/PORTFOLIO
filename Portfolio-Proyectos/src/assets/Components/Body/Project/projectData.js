@@ -43,7 +43,7 @@ export const getProjectsData = (isDarkMode) => [
     shortDescription: isDarkMode
       ? "// Gestor de tareas con categorías, filtros y estadísticas."
       : "Gestor de tareas con categorías, filtros y estadísticas.",
-    liveUrl: "https://tu-taskflow-deploy.vercel.app/", // Reemplaza con tu URL de deploy
+    liveUrl: "https://next-js-ts-omega.vercel.app/", // Reemplaza con tu URL de deploy
     image: "/taskflow.png", // Asegúrate de agregar esta imagen a tu carpeta public
     technologies: [
       { name: isDarkMode ? "NEXT.JS" : "Next.js", color: "blue" },
